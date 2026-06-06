@@ -1107,26 +1107,27 @@ body{
   ─────────────────────────────────
 
   function doPost(e) {
-    var sheet = SpreadsheetApp.getActiveSpreadsheet().getActiveSheet();
-    var data  = JSON.parse(e.postData.contents);
-    sheet.appendRow([
-      data.name,
-      data.phone,
-      data.region,
-      data.status  || "",
-      data.purpose || "",
-      data.resultType,
-      data.answers      || "",
-      data.utm_source   || "",
-      data.utm_medium   || "",
-      data.utm_campaign || "",
-      data.page_url     || "",
-      data.created_at
-    ]);
-    return ContentService
-      .createTextOutput(JSON.stringify({result:"ok"}))
-      .setMimeType(ContentService.MimeType.JSON);
-  }
+  var sheet = SpreadsheetApp.getActiveSpreadsheet().getActiveSheet();
+  var data = JSON.parse(e.postData.contents);
+
+  sheet.appendRow([
+    data.name || "",
+    data.phone || "",
+    data.region || "",
+    data.status || "",
+    data.purpose || "",
+    data.resultType || "",
+    data.utm_source || "",
+    data.utm_medium || "",
+    data.utm_campaign || "",
+    data.page_url || "",
+    data.created_at || new Date()
+  ]);
+
+  return ContentService
+    .createTextOutput(JSON.stringify({ result: "ok" }))
+    .setMimeType(ContentService.MimeType.JSON);
+}
 
   ─────────────────────────────────
   3. 상단 "저장(💾)" 버튼 클릭 → 프로젝트 이름: "이바우펫DB연동"
