@@ -974,7 +974,7 @@ body{
       <input class="fi" type="tel" id="FP" placeholder="010-0000-0000"
         maxlength="13" inputmode="numeric"
         oninput="fmtPhone(this); validatePhone(this)">
-      <div class="err-msg" id="FP-err">올바른 휴대폰 번호를 입력해주세요 (예: 010-1234-5678)</div>
+      <div class="err-msg" id="FP-err">010-0000-0000 형식으로 11자리 휴대폰 번호를 입력해주세요</div>
       <div class="ok-msg" id="FP-ok">확인됐습니다</div>
     </div>
 
@@ -1153,7 +1153,7 @@ body{
 
 <script>
 /* ── CONFIG ─────────────────────── */
-const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxdAzpcTrnib7K5Isu7HAkbeBn-_naOWlkVp1cb_-VpUQOz4SItEVhX_Eh8ZWTVUEk/exec'; // Google Apps Script 웹앱 URL 입력 시 DB 자동 저장
+const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzCnBOi_lC-Jl6l8PlE_Gn91f4ZfkX1LdNuAWTsEelYRPx752mqm1TkxNTw5kZT27Ma/exec'; // Google Apps Script 웹앱 URL 입력 시 DB 자동 저장
 const NAVER_FORM_URL = 'https://naver.me/xuFWuSPX';
 const NAVER_TALK_URL = 'https://talk.naver.com/WF9NNIU';
 const PHONE_NUMBER = '01083871793';
@@ -1578,13 +1578,13 @@ function validateName(inp){
 }
 function validatePhone(inp){
   const raw = inp.value.replace(/\D/g,'');
-  const ok = /^01[0-9]{8,9}$/.test(raw);
+  const ok = /^010\d{8}$/.test(raw);
   inp.className = 'fi ' + (ok ? 'ok' : raw.length ? 'err' : '');
   document.getElementById('FP-err').className = 'err-msg' + (raw.length && !ok ? ' show' : '');
   document.getElementById('FP-ok').className = 'ok-msg' + (ok ? ' show' : '');
 }
 function fmtPhone(inp){
-  let v = inp.value.replace(/\D/g,'');
+  let v = inp.value.replace(/\D/g,'').slice(0,11);
   if(v.length <= 3) inp.value = v;
   else if(v.length <= 7) inp.value = v.slice(0,3)+'-'+v.slice(3);
   else inp.value = v.slice(0,3)+'-'+v.slice(3,7)+'-'+v.slice(7,11);
@@ -1611,13 +1611,16 @@ function safeLocalStore(key, value){
 }
 
 function postWithTimeout(url, payload, timeoutMs){
+  /* Apps Script는 CORS 응답을 주지 않으므로 no-cors로 전송합니다.
+     application/json 헤더는 브라우저에서 preflight/CORS 문제를 만들 수 있어
+     단순 요청인 text/plain으로 보냅니다. Apps Script에서는 JSON.parse(e.postData.contents)로 파싱됩니다. */
   const fetchJob = fetch(url, {
     method:'POST',
     mode:'no-cors',
-    headers:{'Content-Type':'application/json'},
+    headers:{'Content-Type':'text/plain;charset=utf-8'},
     body: JSON.stringify(payload)
   });
-  const timeoutJob = new Promise(resolve => setTimeout(resolve, timeoutMs || 3500));
+  const timeoutJob = new Promise(resolve => setTimeout(resolve, timeoutMs || 6000));
   return Promise.race([fetchJob, timeoutJob]);
 }
 
@@ -1636,7 +1639,7 @@ async function doSubmit(event){
 
   const rawP = phone.replace(/\D/g,'');
   const nameOk = !!name && name.length >= 2 && /^[가-힣a-zA-Z\s]+$/.test(name);
-  const phoneOk = /^01[0-9]{8,9}$/.test(rawP);
+  const phoneOk = /^010\d{8}$/.test(rawP);
 
   if(!nameOk){
     nameEl.className='fi err';
@@ -1685,7 +1688,7 @@ async function doSubmit(event){
   try{
     const url = (SCRIPT_URL || '').trim();
     if(url && url.startsWith('https://script.google.com/')){
-      await postWithTimeout(url, payload, 3500);
+      await postWithTimeout(url, payload, 6000);
     }
   }catch(e){
     console.warn('DB 전송 실패. 화면 전환은 계속 진행합니다:', e);
