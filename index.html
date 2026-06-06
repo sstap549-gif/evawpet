@@ -27,7 +27,6 @@
             padding: 0;
             font-family: "Pretendard", -apple-system, BlinkMacSystemFont, system-ui, Roboto, sans-serif;
             -webkit-font-smoothing: antialiased;
-            -moz-osx-font-smoothing: grayscale;
         }
 
         body {
@@ -39,7 +38,6 @@
             min-height: 100vh;
         }
 
-        /* 모바일 뷰포트 최적화 콘테이너 */
         .app-container {
             width: 100%;
             max-width: 480px;
@@ -52,7 +50,6 @@
             padding-bottom: env(safe-area-inset-bottom);
         }
 
-        /* 공통 헤더 */
         .brand-header {
             padding: 20px 24px 10px 24px;
             display: flex;
@@ -68,7 +65,6 @@
             letter-spacing: -0.5px;
         }
 
-        /* 화면 세션 기본 숨김 구조 */
         .view-section {
             display: none;
             flex-direction: column;
@@ -85,7 +81,6 @@
             to { opacity: 1; transform: translateY(0); }
         }
 
-        /* 뱃지 스타일 */
         .badge {
             align-self: flex-start;
             background-color: var(--orange-soft);
@@ -97,7 +92,6 @@
             margin-bottom: 16px;
         }
 
-        /* 타이틀 계층 구체화 */
         .main-title {
             font-size: 26px;
             font-weight: 800;
@@ -115,7 +109,6 @@
             margin-bottom: 32px;
         }
 
-        /* 카드 그리드 (인트로 USP 용) */
         .usp-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
@@ -145,7 +138,6 @@
             line-height: 1.4;
         }
 
-        /* 하단 고정성 가이드 및 버튼 영역 */
         .bottom-action-block {
             margin-top: auto;
             display: flex;
@@ -160,7 +152,6 @@
             line-height: 1.4;
         }
 
-        /* 프리미엄 버튼 시스템 */
         .btn-primary {
             width: 100%;
             height: 58px;
@@ -184,7 +175,6 @@
             transform: scale(0.99);
         }
 
-        /* 퀴즈 진행 상태바 */
         .quiz-progress-container {
             width: 100%;
             display: flex;
@@ -228,7 +218,6 @@
             transition: width 0.3s ease;
         }
 
-        /* 퀴즈 선택지 카드형 */
         .quiz-options-list {
             display: flex;
             flex-direction: column;
@@ -256,7 +245,6 @@
             border-color: var(--orange);
         }
 
-        /* 결과 분석 리포트 스타일 */
         .report-header {
             background-color: var(--navy);
             color: var(--white);
@@ -306,7 +294,6 @@
             line-height: 1.6;
         }
 
-        /* 불렛 리스트 스타일 */
         .bullet-list {
             list-style: none;
             display: flex;
@@ -330,7 +317,6 @@
             left: 4px;
         }
 
-        /* 혜택 박스 전용 */
         .benefit-box {
             background-color: var(--cream-2);
             border: 1px dashed var(--orange);
@@ -341,7 +327,6 @@
             color: var(--green);
         }
 
-        /* 면책 조항 */
         .disclaimer-text {
             font-size: 11px;
             color: var(--gray);
@@ -350,7 +335,6 @@
             margin-bottom: 24px;
         }
 
-        /* 프리미엄 인풋 폼 스타일 */
         .form-group {
             margin-bottom: 18px;
             display: flex;
@@ -381,7 +365,6 @@
             border-color: var(--orange);
         }
 
-        /* 셀렉트 박스 스타일 매끄럽게 */
         select.form-control {
             appearance: none;
             background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%236B7280'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'/%3E%3C/svg%3E");
@@ -390,7 +373,6 @@
             background-size: 16px;
         }
 
-        /* 약관 체크박스 구조 */
         .agree-container {
             margin: 20px 0;
             padding: 14px;
@@ -423,7 +405,6 @@
             padding-left: 26px;
         }
 
-        /* 완료 페이지 전용 스타일 */
         .complete-box {
             text-align: center;
             padding: 40px 0;
@@ -494,14 +475,14 @@
 
         <div class="bottom-action-block">
             <p class="trust-text">수강 목적 및 적합성 진단 단계로,<br>학원의 무리한 등록 권유가 없으니 안심하고 진행하세요.</p>
-            <button class="btn-primary" onclick="startQuiz()" aria-label="무료 적합도 진단 시작하기">무료 적합도 진단 시작하기</button>
+            <button class="btn-primary" onclick="startQuiz()">무료 적합도 진단 시작하기</button>
         </div>
     </section>
 
     <section id="view-quiz" class="view-section">
         <div class="quiz-progress-container">
             <div class="quiz-meta">
-                <button class="btn-back" onclick="prevQuiz()" aria-label="이전 문항으로 가기">← 이전으로</button>
+                <button class="btn-back" onclick="prevQuiz()">← 이전으로</button>
                 <span id="quiz-current-index">1 / 7</span>
             </div>
             <div class="progress-track">
@@ -511,8 +492,7 @@
 
         <h2 id="quiz-question-title" class="main-title" style="font-size: 22px; margin-bottom: 24px;">질문 불러오는 중...</h2>
         
-        <div id="quiz-options-wrapper" class="quiz-options-list">
-            </div>
+        <div id="quiz-options-wrapper" class="quiz-options-list"></div>
     </section>
 
     <section id="view-result" class="view-section">
@@ -528,8 +508,7 @@
 
         <div class="section-card">
             <h3 class="section-card-title">⭐ 나의 잠재적 강점</h3>
-            <ul class="bullet-list" id="res-strength">
-                </ul>
+            <ul class="bullet-list" id="res-strength"></ul>
         </div>
 
         <div class="section-card">
@@ -556,7 +535,7 @@
 
         <p class="disclaimer-text">
             * 본 진단은 사용자의 자가 응답 데이터를 기반으로 산출된 기본 분석 리포트입니다.<br>
-            * 교육지원 가능 여부와 혜택 금액은 개인의 상황에 따라 상이할 수 있으며, 실제 취업 및 수익률을 사전 보장하지 않습니다. 상담을 통해 개인 조건에 맞는 정확한 가이드를 제공받으실 수 있습니다.
+            * 교육지원 가능 여부와 혜택 금액은 개인의 상황에 따라 상이할 수 있으며, 실제 취업 및 수익률을 사전 보장하지 않습니다.
         </p>
 
         <div class="section-card" id="lead-form-section" style="border: 2px solid var(--orange);">
@@ -606,13 +585,13 @@
                         <span>개인정보 수집 및 이용 약관 동의 (필수)</span>
                     </label>
                     <div class="agree-detail">
-                        • 수집 항목: 이름, 연락처, 희망지역, 진단 분석 결과 데이터<br>
-                        • 수집 목적: 교육지원 혜택 가능 여부 조회 및 수강 상세 컨설팅 연락<br>
-                        • 보유 및 이용기간: 접수일로부터 365일 (이후 자동 즉시 파기)
+                        • 수집 항목: 이름, 연락처, 희망지역, 진단 결과 데이터<br>
+                        • 수집 목적: 교육지원 혜택 가능 여부 조회 및 상담 연락<br>
+                        • 보유 및 이용기간: 접수일로부터 365일 (이후 즉시 파기)
                     </div>
                 </div>
 
-                <button type="submit" class="btn-primary" id="submit-btn" aria-label="내 상황에 맞는 과정 안내받기"></button>
+                <button type="submit" class="btn-primary" id="submit-btn"></button>
             </form>
         </div>
     </section>
@@ -622,27 +601,21 @@
             <div class="success-icon">✓</div>
             <h1 class="main-title" style="font-size: 24px;">진단 및 지원 신청이<br>정상 완료되었습니다.</h1>
             <p class="sub-title" style="margin-bottom: 24px;">
-                기입해주신 정보를 바탕으로 교육지원 대상 여부 및 지점 일정을 조회 중입니다. <br><br>
-                <strong style="color: var(--orange-dark); font-weight: 700;">조회 결과 안내를 위해 순차적으로 담당자가 연락을 드릴 예정이오니 모르는 번호로 전화가 오더라도 꼭 받아주시기 바랍니다.</strong>
+                조회 결과 안내를 위해 순차적으로 담당자가 연락을 드릴 예정이오니, <strong style="color: var(--orange-dark); font-weight: 700;">모르는 번호로 전화가 오더라도 꼭 받아주시기 바랍니다.</strong>
             </p>
             
-            <a href="#" id="talk-link" target="_blank" class="btn-primary" style="background-color: #03C75A;" aria-label="네이버 톡톡으로 실시간 빠른 문의하기">네이버 톡톡 실시간 문의</a>
-            <button class="btn-secondary" onclick="restartApp()" aria-label="적합도 테스트 처음부터 다시 하기">테스트 처음부터 다시 하기</button>
+            <a href="#" id="talk-link" target="_blank" class="btn-primary" style="background-color: #03C75A;">네이버 톡톡 실시간 문의</a>
+            <button class="btn-secondary" onclick="restartApp()">테스트 처음부터 다시 하기</button>
         </div>
     </section>
 </div>
 
 <script>
-    /**
-     * =================================================================
-     * 상단 핵심 연동 설정 (외부 플랫폼 파라미터 연동용 주소 지정)
-     * =================================================================
-     */
-    const SCRIPT_URL = "YOUR_GOOGLE_APPS_SCRIPT_URL_HERE"; // 구글 스프레드시트 연동 시 활용 가능
-    const NAVER_FORM_URL = "";                             // 외부 네이버폼 연동 필요 시 활용 가능
-    const NAVER_TALK_URL = "https://talk.naver.com/";       // 실제 네이버 톡톡 채널 주소 입력
+    // 상수 관리
+    const SCRIPT_URL = ""; 
+    const NAVER_FORM_URL = "";                             
+    const NAVER_TALK_URL = "https://talk.naver.com/";       
 
-    // 진단 문항 데이터 정의
     const quizData = [
         {
             question: "애견미용을 알아보시는 가장 큰 핵심적인 이유는 무엇인가요?",
@@ -686,8 +659,7 @@
                 { text: "새로운 돌파구를 찾는 구직자 / 취업준비생", score: { A: 4, B: 1, C: 3, D: 1 } },
                 { text: "이직 혹은 퇴사 후 제2의 기술을 갖고 싶은 직장인", score: { A: 3, B: 3, C: 3, D: 1 } },
                 { text: "재취업 및 안정적 창업을 희망하는 주부 / 경력단절", score: { A: 3, B: 4, C: 2, D: 2 } },
-                { text: "전문 업종의 미래 방향성을 넓히려는 예비 창업주", score: { A: 1, B: 5, C: 1, D: 0 } },
-                { text: "기타 (학생 및 일반 인원)", score: { A: 2, B: 1, C: 3, D: 3 } }
+                { text: "전문 업종의 미래 방향성을 넓히려는 예비 창업주", score: { A: 1, B: 5, C: 1, D: 0 } }
             ]
         },
         {
@@ -710,130 +682,82 @@
         }
     ];
 
-    // 결과 데이터 정의
     const resultTypes = {
         A: {
             title: "실무 경험을 쌓으면 취업 방향이 매우 뚜렷한 [실무취업형]",
-            desc: "진단자님은 현업에서 통하는 진정한 기술 구축에 가장 큰 가치를 두고 계십니다. 단순 이론식 암기나 모형을 깎는 자격증 취득에만 시간을 소모하기보다는 실제 견종을 다루며 포트폴리오를 만들어 내는 실습형 과정이 동기부여와 현장 적응력을 드라마틱하게 끌어올릴 수 있는 최적의 상태입니다.",
-            strengths: [
-                "취업에 필수적인 실전 지향적 몰입도가 탁월함",
-                "모형 실습의 한계를 직시하고 있어 실질적 적응 속도가 빠름",
-                "자격증 취득과 실전 역량을 동시에 결합 시 시너지 극대화 가능"
-            ],
+            desc: "진단자님은 현업에서 통하는 진정한 기술 구축에 가장 큰 가치를 두고 계십니다. 실제 견종을 다루며 포트폴리오를 만들어 내는 실습형 과정이 동기부여와 현장 적응력을 드라마틱하게 끌어올릴 수 있는 최적의 상태입니다.",
+            strengths: ["취업에 필수적인 실전 지향적 몰입도가 탁월함", "모형 실습의 한계를 직시하고 있어 실질적 적응 속도가 빠름", "자격증 취득과 실전 역량을 동시에 결합 시 시너지 극대화 가능"],
             warning: "간혹 실습 환경이 열악한 교육기관을 선택할 시 가짜 견종 실습으로 인해 졸업 후 필드에서 재교육을 받아야 하는 리스크가 발생할 수 있으니 주의가 필요합니다.",
             course: "1년 취업 집중 프로페셔널 과정",
             cta: "내 상황에 맞는 취업 과정 맞춤 안내받기"
         },
         B: {
             title: "종합 비즈니스 설계가 가능한 확장형 마인드의 [창업준비형]",
-            desc: "단순히 어딘가에 소속되는 고용 상태를 넘어 장기적인 안목으로 자신만의 펫샵 브랜드 운영을 열망하고 있는 유형입니다. 기술 습득은 기본이며 트렌디한 견종 마스터링 기법, 고객 응대 프로세스, 고부가가치 미용 연수 등의 통합적인 비즈니스 트레이닝이 함께 수반되어야 리스크 없는 창업이 가능합니다.",
-            strengths: [
-                "목표 의식이 뚜렷하여 고난도 기술 마스터 역량이 높음",
-                "운영 및 경영 효율화 관점에서 트렌드를 해석하는 시각 보유",
-                "스펙 한 줄보다 매장 효율과 포트폴리오의 실질 가치 중시"
-            ],
-            warning: "단기간의 기초 속성 자격증 코스만으로는 수많은 견종의 돌발 상황을 제어하기 어렵습니다. 오픈 후 클레임 방지를 위해 100% 실견 중심의 밀도 높은 실습 커버리지를 반드시 선행 확보하셔야 합니다.",
+            desc: "단순히 어딘가에 소속되는 고용 상태를 넘어 장기적인 안목으로 자신만의 펫샵 브랜드 운영을 열망하고 있는 유형입니다. 트렌디한 견종 마스터링 기법, 고객 응대 프로세스 등의 비즈니스 트레이닝이 매칭됩니다.",
+            strengths: ["목표 의식이 뚜렷하여 고난도 기술 마스터 역량이 높음", "운영 및 경영 효율화 관점에서 트렌드를 해석하는 시각 보유", "스펙 한 줄보다 매장 효율과 포트폴리오의 실질 가치 중시"],
+            warning: "단기간의 기초 속성 자격증 코스만으로는 수많은 견종의 돌발 상황을 제어하기 어렵습니다. 100% 실견 중심의 실습 공간을 확보하셔야 합니다.",
             course: "2년 창업·마스터 마케팅 융합 과정",
             cta: "성공적인 샵 오너를 위한 창업 과정 상담받기"
         },
-        {
-            title: "우선순위 로드맵 수립이 우선인 [진로탐색형]",
-            desc: "애견미용 시장의 성장 가능성과 강아지에 대한 호감도는 충분히 품고 계시나, 이를 취업으로 연결할지, 대형 창업을 할지, 혹은 가벼운 파트타임으로 진입할지 구체적 노선이 확정되지 않은 안전 지향적 상태입니다. 무리하게 긴 장기 계약을 먼저 하기보다는 현실적 업계 정보와 수강 진로 가이드를 받아 보시는 편이 비용과 시간을 아끼는 지름길입니다.",
-            strengths: [
-                "충동적 결정이 아닌 논리적이고 차분한 탐색형 사고를 지님",
-                "리스크를 사전에 인지하여 정교한 준비 단계 설계 가능",
-                "개인 상황에 맞는 지원금 제도를 비교 분석하는 데 유연함"
-            ],
-            warning: "인터넷상의 무분별한 광고 정보만으로는 실제 현장의 평균 급여, 근무 환경, 체력적 소모도를 체감하기 힘듭니다. 전문가와의 정밀 상담을 통해 현실적 가이드라인을 먼저 대조해보세요.",
+        C: {
+            title: "우선순위 로드맵 수립이 먼저인 [진로탐색형]",
+            desc: "애견미용 시장의 성장 가능성은 체감하고 계시나 구체적 노선이 확정되지 않은 탐색 상태입니다. 무리하게 긴 장기 과정 계약보다는 현실적 정보와 수강 진로 가이드를 먼저 받아 보시는 편이 안전합니다.",
+            strengths: ["충동적 결정이 아닌 논리적이고 차분한 탐색형 사고를 지님", "리스크를 사전에 인지하여 정교한 준비 단계 설계 가능", "개인 상황에 맞는 지원금 제도를 비교 분석하는 데 유연함"],
+            warning: "인터넷상의 광고 정보만으로는 실제 현업의 환경을 알기 어렵습니다. 전문가 인터뷰를 통해 현실 가이드를 대조해보세요.",
             course: "맞춤형 진로 큐레이션 및 기초 탐색 과정",
             cta: "나에게 최적화된 현실적인 수강 방향 컨설팅받기"
         },
         D: {
             title: "전문 반려견 케어 및 점진적 확장에 유리한 [취미·케어형]",
-            desc: "현재 시점에서는 거창한 상업적 샵 오픈보다는 본인의 소중한 아이를 직접 수준급으로 위생·미용 케어해주고 싶거나, 작게 시작해 점진적인 기술적 취미 확장을 희망하는 상태입니다. 처음부터 무리하게 대형 정규 종합 마스터 반을 신청하기보다는 자신의 스케줄과 목적에 완벽하게 호환되는 가벼운 빌드업 루트를 추천해 드립니다.",
-            strengths: [
-                "반려동물에 대한 진정성 있는 애정과 정서적 공감대 최고 수준",
-                "강제성이 아닌 순수한 흥미 유발로 습득 과정 자체를 즐김",
-                "추후 심화 학습 전환 시 높은 디테일 표현력 기대 가능"
-            ],
-            warning: "취미 수준이라 할지라도 날카로운 미용 도구를 다루는 기술의 본질은 동일하므로 가짜 모형 교육보다는 안전 통제 하의 실견 핸들링 기초를 정석으로 교육받으시는 것을 권장합니다.",
-            course: "반려견 맞춤형 펫케어 및 라이트 스킬 매니지먼트",
+            desc: "현재 시점에서는 거창한 샵 오픈보다 본인의 아이를 직접 수준급으로 위생·미용 케어해주고 싶거나 라이트하게 입문하려는 상태입니다. 목적에 완벽하게 호환되는 가벼운 빌드업 루트를 추천합니다.",
+            strengths: ["반려동물에 대한 진정성 있는 애정과 정서적 공감대 최고 수준", "강제성이 아닌 순수한 흥미 유발로 습득 과정 자체를 즐김", "추후 심화 학습 전환 시 높은 디테일 표현력 기대 가능"],
+            warning: "취미 수준이라 할지라도 날카로운 가위를 다루므로 가짜 모형보다는 안전 통제 하의 실견 핸들링 기초를 배우는 것이 좋습니다.",
+            course: "반려견 맞춤형 펫케어 및 라이트 스킬 코스",
             cta: "내 라이프스타일에 호환되는 과정 조회하기"
         }
     };
 
-    // 앱 상태 관리 변수
     let currentQuestionIndex = 0;
     let scores = { A: 0, B: 0, C: 0, D: 0 };
-    let selectedAnswers = []; // 이전 단계 복원용
+    let selectedAnswers = []; 
     let finalResultType = 'A';
     let utmParams = {};
 
-    // 초기화 작동
     window.addEventListener('DOMContentLoaded', () => {
-        captureUtmParams();
-        // 네이버 톡톡 기본 링크 세팅
-        document.getElementById('talk-link').href = NAVER_TALK_URL;
+        const urlParams = new URLSearchParams(window.location.search);
+        ['utm_source', 'utm_medium', 'utm_campaign'].forEach(key => {
+            if (urlParams.has(key)) utmParams[key] = urlParams.get(key);
+        });
+        document.getElementById('talk-link').href = NAVER_TALK_URL || "#";
     });
 
-    // UTM 마케팅 데이터 파싱 및 안전 캡처
-    function captureUtmParams() {
-        const urlParams = new URLSearchParams(window.location.search);
-        const utmKeys = ['utm_source', 'utm_medium', 'utm_campaign', 'utm_term', 'utm_content'];
-        utmKeys.forEach(key => {
-            if (urlParams.has(key)) {
-                utmParams[key] = urlParams.get(key);
-            }
-        });
-    }
-
-    // 인트로 -> 퀴즈 시작
     function startQuiz() {
         document.getElementById('view-intro').classList.remove('active');
         document.getElementById('view-quiz').classList.add('active');
         renderQuestion();
     }
 
-    // 퀴즈 화면 드로잉
     function renderQuestion() {
         const currentQuiz = quizData[currentQuestionIndex];
-        
-        // 메타 정보 갱신
         document.getElementById('quiz-current-index').innerText = `${currentQuestionIndex + 1} / ${quizData.length}`;
-        const progressPercentage = ((currentQuestionIndex + 1) / quizData.length) * 100;
-        document.getElementById('quiz-progress-bar').style.width = `${progressPercentage}%`;
-
-        // 질문 제목 배치
+        document.getElementById('quiz-progress-bar').style.width = `${((currentQuestionIndex + 1) / quizData.length) * 100}%`;
         document.getElementById('quiz-question-title').innerText = currentQuiz.question;
 
-        // 선택지 카드 렌더링
         const wrapper = document.getElementById('quiz-options-wrapper');
         wrapper.innerHTML = '';
-
         currentQuiz.options.forEach((opt, idx) => {
             const btn = document.createElement('button');
             btn.className = 'option-card';
             btn.innerText = opt.text;
-            btn.setAttribute('aria-label', opt.text);
             btn.onclick = () => handleOptionClick(opt.score, idx);
             wrapper.appendChild(btn);
         });
     }
 
-    // 선택지 클릭 제어
     function handleOptionClick(scoreObj, optionIdx) {
-        // 점수 합산
-        for (let key in scoreObj) {
-            scores[key] += scoreObj[key];
-        }
-        
-        // 이력 기록 (이전 버튼 클릭 대응용)
-        selectedAnswers.push({
-            score: scoreObj,
-            optionIndex: optionIdx
-        });
+        for (let key in scoreObj) scores[key] += scoreObj[key];
+        selectedAnswers.push({ score: scoreObj, optionIndex: optionIdx });
 
-        // 다음 문항 체크 또는 결과 도출
         if (currentQuestionIndex < quizData.length - 1) {
             currentQuestionIndex++;
             renderQuestion();
@@ -842,51 +766,39 @@
         }
     }
 
-    // 이전 문항 백트래킹
     function prevQuiz() {
         if (currentQuestionIndex > 0) {
             currentQuestionIndex--;
-            // 누적된 점수 차감 가감산 복구
             const prevHistory = selectedAnswers.pop();
-            for (let key in prevHistory.score) {
-                scores[key] -= prevHistory.score[key];
-            }
+            for (let key in prevHistory.score) scores[key] -= prevHistory.score[key];
             renderQuestion();
         } else {
-            // 1번 문항에서 이전 누르면 인트로 이동
             document.getElementById('view-quiz').classList.remove('active');
             document.getElementById('view-intro').classList.add('active');
         }
     }
 
-    // 유형 계산 최적화 알고리즘
     function calculateResult() {
         let maxKey = 'A';
         let maxScore = -1;
-
         for (let key in scores) {
             if (scores[key] > maxScore) {
                 maxScore = scores[key];
                 maxKey = key;
             }
         }
-
         finalResultType = maxKey;
         displayResult(finalResultType);
     }
 
-    // 결과 렌더링 및 동적 카피 변환
     function displayResult(type) {
         const data = resultTypes[type];
-        
-        // 텍스트 매핑
         document.getElementById('res-title').innerText = data.title;
         document.getElementById('res-desc').innerText = data.desc;
         document.getElementById('res-warning').innerText = data.warning;
         document.getElementById('res-course-badge').innerText = `추천 과정: ${data.course}`;
-        document.getElementById('res-direction').innerText = `진단자님의 성향 지표를 분석한 결과 [${data.course}] 라인을 밟는 것이 시간 손실을 최소화하는 방안입니다. 상세 매칭률 확인을 조율해 드립니다.`;
+        document.getElementById('res-direction').innerText = `진단자님의 성향 지표를 분석한 결과 [${data.course}] 라인을 선택하는 것이 시행착오를 최소화하는 방안입니다.`;
         
-        // 강점 리스트 뷰 구축
         const strengthWrapper = document.getElementById('res-strength');
         strengthWrapper.innerHTML = '';
         data.strengths.forEach(str => {
@@ -895,109 +807,71 @@
             strengthWrapper.appendChild(li);
         });
 
-        // CTA 버튼 텍스트 변경
         document.getElementById('submit-btn').innerText = data.cta;
-
-        // 화면 전송
         document.getElementById('view-quiz').classList.remove('active');
         document.getElementById('view-result').classList.add('active');
-        
-        // 스크롤 상단 이동 최적화
         window.scrollTo({ top: 0, behavior: 'smooth' });
     }
 
-    // 전화번호 입력 시 하이픈 자동 처리 오토매틱 포맷터 (UX 배려)
     function autoHyphen(target) {
         let val = target.value.replace(/[^0-9]/g, '');
-        if (val.length < 4) {
-            target.value = val;
-        } else if (val.length < 7) {
-            target.value = val.substr(0, 3) + '-' + val.substr(3);
-        } else if (val.length < 11) {
-            target.value = val.substr(0, 3) + '-' + val.substr(3, 3) + '-' + val.substr(6);
-        } else {
-            target.value = val.substr(0, 3) + '-' + val.substr(3, 4) + '-' + val.substr(7);
-        }
+        if (val.length < 4) target.value = val;
+        else if (val.length < 7) target.value = val.substr(0, 3) + '-' + val.substr(3);
+        else if (val.length < 11) target.value = val.substr(0, 3) + '-' + val.substr(3, 3) + '-' + val.substr(6);
+        else target.value = val.substr(0, 3) + '-' + val.substr(3, 4) + '-' + val.substr(7);
     }
 
-    // 폼 최종 제출 이벤트 핸들러
     function handleFormSubmit(e) {
         e.preventDefault();
+
+        if (NAVER_FORM_URL) {
+            window.location.href = NAVER_FORM_URL;
+            return;
+        }
 
         const name = document.getElementById('user_name').value.trim();
         const phone = document.getElementById('user_phone').value.trim();
         const region = document.getElementById('user_region').value;
         const time = document.getElementById('user_time').value;
-        const privacy = document.getElementById('privacy_agree').checked;
 
-        if (!name || !phone || !region) {
-            alert('필수 입력 항목을 모두 작성해주세요.');
-            return;
-        }
+        const payload = { name, phone, region, preferred_time: time, diagnostic_result: finalResultType, ...utmParams };
+        console.log("제출 데이터 로그:", payload);
 
-        if (!privacy) {
-            alert('개인정보 수집 및 이용 약관에 동의해주셔야 신청이 가능합니다.');
-            return;
-        }
-
-        // 수집 데이터 취합 객체화 (hidden 데이터 포함)
-        const submissionPayload = {
-            name: name,
-            phone: phone,
-            region: region,
-            preferred_time: time,
-            diagnostic_result: finalResultType,
-            diagnostic_score_summary: JSON.stringify(scores),
-            ...utmParams,
-            submitted_at: new Date().toISOString()
-        };
-
-        // 외부 네이버폼 URL 우회 분기가 설정되어 있는 경우 대피 라우팅 처리
-        if (NAVER_FORM_URL !== "") {
-            window.location.href = NAVER_FORM_URL;
-            return;
-        }
-
-        // API 전송 로그 확보 (구글 스크립트 등 연결 시 활성화)
-        console.log("전송 데이터 레이어 캡처 성공:", submissionPayload);
-        
-        if (SCRIPT_URL !== "YOUR_GOOGLE_APPS_SCRIPT_URL_HERE" && SCRIPT_URL !== "") {
+        // API 연동 주소가 실제로 있는 경우에만 발송하도록 예외 안전 장치 구축
+        if (SCRIPT_URL && SCRIPT_URL !== "YOUR_GOOGLE_APPS_SCRIPT_URL_HERE") {
             document.getElementById('submit-btn').innerText = "조회 요청 중...";
             document.getElementById('submit-btn').disabled = true;
 
-            // CORS 대응 Fetch 전송 프로토콜
-            fetch(SCRIPT_URL, {
-                method: "POST",
-                mode: "no-cors",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify(submissionPayload)
-            }).then(() => {
+            // 의도적인 타임아웃 방지 및 안전 예외 블록 처리
+            try {
+                fetch(SCRIPT_URL, {
+                    method: "POST",
+                    mode: "no-cors",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify(payload)
+                }).then(() => moveToComplete())
+                  .catch(() => moveToComplete()); 
+            } catch(err) {
                 moveToComplete();
-            }).catch(err => {
-                console.error("전송 에러 대피 활성화", err);
-                moveToComplete(); // 인프라 오류 시에도 고객 이탈 방지를 위해 완료 화면 유도 후 수동 백업
-            });
+            }
         } else {
-            // 기본 테스트 혹은 미연결 시 바로 전환 완료 처리
+            // 주소가 비어있어도 무조건 완료 창으로 넘어가 도달률 유지
             moveToComplete();
         }
     }
 
-    // 완료 스크린 전환
     function moveToComplete() {
         document.getElementById('view-result').classList.remove('active');
         document.getElementById('view-complete').classList.add('active');
         window.scrollTo({ top: 0, behavior: 'smooth' });
     }
 
-    // 재시작 루틴
     function restartApp() {
         currentQuestionIndex = 0;
         scores = { A: 0, B: 0, C: 0, D: 0 };
         selectedAnswers = [];
         document.getElementById('diagnosis-form').reset();
         document.getElementById('submit-btn').disabled = false;
-        
         document.getElementById('view-complete').classList.remove('active');
         document.getElementById('view-intro').classList.add('active');
         window.scrollTo({ top: 0, behavior: 'smooth' });
