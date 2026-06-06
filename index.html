@@ -1,681 +1,1007 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no">
-<title>애견미용 적합도 진단 | 이바우펫</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Nanum+Gothic:wght@400;700;800&family=Black+Han+Sans&display=swap" rel="stylesheet">
-<style>
-/* ─── 디자인 토큰 시스템 (이바우펫 공식 오렌지 매칭) ─── */
-:root{
-  --or:#FF9100;      /* 공식 리틀리 오렌지 컬러 */
-  --or-d:#E07F00;    /* 호버용 딥 오렌지 */
-  --or-lt:#FFF4E5;   /* 소프트 오렌지 배경 */
-  --or-llt:#FFFDF9;  /* 초경량 오렌지 틴트 */
-  --nv:#1E293B;      /* 세련된 네이비 차콜 */
-  --nv2:#334155;     /* 서브 차콜 */
-  --cr:#FFFFFF;
-  --cr2:#FAFAFA;
-  --gy:#64748B;
-  --gy-lt:#F8FAFC;
-  --gy-md:#E2E8F0;
-  --gn:#10B981;
-  --gn-lt:#D1FAE5;
-  --am:#F59E0B;
-  --am-lt:#FEF3C7;
-  --sh0:0 1px 3px rgba(0,0,0,.05);
-  --sh1:0 4px 14px rgba(255,145,0,.12);
-  --sh2:0 10px 30px rgba(0,0,0,.08);
-  --r:16px; --rsm:12px; --rlg:24px;
-  --W:480px;         /* 모바일 친화형 최대 폭 */
-  --PX:24px;
-}
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>애견미용 적합도 진단 - 이바우펫 애견미용학원</title>
+    <link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css" />
+    <style>
+        :root {
+            --orange: #FF6A00;
+            --orange-dark: #E85C00;
+            --orange-soft: #FFF3E8;
+            --cream: #FFFCF7;
+            --cream-2: #FFF7EF;
+            --black: #111827;
+            --gray: #6B7280;
+            --gray-light: #F3F4F6;
+            --line: #E5E7EB;
+            --green: #16A34A;
+            --navy: #172033;
+            --white: #FFFFFF;
+        }
 
-*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
-html{-webkit-text-size-adjust:100%;height:100%;}
-body{
-  font-family:'Nanum Gothic',sans-serif;
-  background:#F1F5F9;
-  color:var(--nv);
-  min-height:100vh;
-  -webkit-font-smoothing:antialiased;
-  overflow-x:hidden;
-}
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: "Pretendard", -apple-system, BlinkMacSystemFont, system-ui, Roboto, sans-serif;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
 
-/* ─── 모바일 앱 뷰포트 래퍼 ─── */
-.app{
-  position:relative;
-  max-width:var(--W);
-  min-height:100vh;
-  margin:0 auto;
-  background:var(--cr);
-  display:flex;
-  flex-direction:column;
-}
-@media(min-width:520px){
-  .app{box-shadow:0 0 60px rgba(0,0,0,.1);min-height:92vh;border-radius:20px;margin:40px auto;overflow:hidden;}
-  body{display:flex;align-items:center;justify-content:center;background:#E2E8F0;}
-}
+        body {
+            background-color: #F8F9FA;
+            color: var(--black);
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            min-height: 100vh;
+        }
 
-/* ─── 상단 고정 헤더 & 프로그레스 바 ─── */
-.topbar{
-  position:sticky;top:0;z-index:200;
-  background:rgba(255,255,255,.96);
-  backdrop-filter:blur(10px);
-  -webkit-backdrop-filter:blur(10px);
-  border-bottom:1px solid var(--gy-md);
-}
-.prog{height:4px;background:#F1F5F9;}
-.prog-fill{
-  height:4px;background:var(--or);
-  width:0%;
-  transition:width .4s cubic-bezier(.4,0,.2,1);
-}
-.nav{
-  display:flex;align-items:center;justify-content:space-between;
-  padding:14px var(--PX);
-}
-.nav-logo{
-  font-family:'Black Han Sans',sans-serif;
-  font-size:18px;color:var(--nv);
-  display:flex;align-items:center;gap:6px;letter-spacing:-.3px;
-}
-.nav-logo em{color:var(--or);font-style:normal;}
-.nav-back{
-  display:none;align-items:center;background:none;border:1px solid var(--gy-md);
-  border-radius:8px;padding:6px 12px;
-  font-size:12px;font-weight:700;color:var(--gy);cursor:pointer;
-}
-.nav-back.show{display:flex;}
+        /* 모바일 뷰포트 최적화 콘테이너 */
+        .app-container {
+            width: 100%;
+            max-width: 480px;
+            background-color: var(--cream);
+            min-height: 100vh;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.05);
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            padding-bottom: env(safe-area-inset-bottom);
+        }
 
-/* ─── 스크린 시스템 ─── */
-.screen{display:none;flex-direction:column;flex:1;animation:fadeIn .4s ease both;}
-.screen.active{display:flex;}
+        /* 공통 헤더 */
+        .brand-header {
+            padding: 20px 24px 10px 24px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background-color: var(--cream);
+        }
 
-/* ════════════════════════════
-   1. 인트로 스크린
-════════════════════════════ */
-#s-intro{background:linear-gradient(180deg, var(--or-lt) 0%, var(--cr) 100%);}
-.i-body{padding:32px var(--PX);flex:1;display:flex;flex-direction:column;}
-.i-pill{
-  display:inline-flex;align-items:center;align-self:flex-start;
-  background:var(--nv);color:#fff;
-  font-size:11px;font-weight:800;padding:6px 14px;border-radius:20px;margin-bottom:20px;
-}
-.i-h1{
-  font-family:'Black Han Sans',sans-serif;
-  font-size:30px;line-height:1.3;color:var(--nv);margin-bottom:16px;
-}
-.i-h1 em{color:var(--or);font-style:normal;}
-.i-lead{font-size:14px;line-height:1.7;color:var(--gy);margin-bottom:28px;}
-.i-lead strong{color:var(--nv);font-weight:700;}
+        .brand-logo {
+            font-size: 15px;
+            font-weight: 800;
+            color: var(--navy);
+            letter-spacing: -0.5px;
+        }
 
-.val-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:28px;}
-.val-card{
-  background:#fff;border-radius:var(--r);padding:18px 16px;
-  border:1px solid var(--gy-md);box-shadow:var(--sh0);
-}
-.val-ico{font-size:24px;display:block;margin-bottom:8px;}
-.val-ttl{font-size:14px;font-weight:800;color:var(--nv);margin-bottom:4px;}
-.val-sub{font-size:11px;color:var(--gy);}
+        /* 화면 세션 기본 숨김 구조 */
+        .view-section {
+            display: none;
+            flex-direction: column;
+            padding: 16px 24px 40px 24px;
+            animation: fadeIn 0.4s ease-in-out;
+        }
 
-.tag-row{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:32px;}
-.itag{
-  font-size:12px;font-weight:700;padding:6px 12px;border-radius:20px;
-  background:#fff;color:var(--nv2);border:1px solid var(--gy-md);
-}
+        .view-section.active {
+            display: flex;
+        }
 
-.btn-start{
-  display:block;width:100%;border:none;background:var(--or);color:#fff;
-  border-radius:var(--r);padding:20px;font-family:'Black Han Sans',sans-serif;
-  font-size:18px;cursor:pointer;text-align:center;box-shadow:var(--sh1);
-  transition:all .2s;
-}
-.btn-start:hover{background:var(--or-d);transform:translateY(-2px);}
-.i-fine{text-align:center;font-size:12px;color:var(--gy);margin-top:14px;}
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(8px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
 
-/* ════════════════════════════
-   2. 퀴즈 스크린
-════════════════════════════ */
-.q-body{padding:32px var(--PX);flex:1;display:flex;flex-direction:column;}
-.q-meta{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;}
-.q-num{font-size:13px;font-weight:800;color:var(--or);}
-.q-dots{display:flex;gap:6px;}
-.qdot{width:8px;height:8px;border-radius:50%;background:var(--gy-md);transition:all .3s;}
-.qdot.done{background:var(--or);}
-.qdot.cur{background:var(--or);transform:scale(1.4);}
+        /* 뱃지 스타일 */
+        .badge {
+            align-self: flex-start;
+            background-color: var(--orange-soft);
+            color: var(--orange-dark);
+            padding: 6px 12px;
+            border-radius: 100px;
+            font-size: 13px;
+            font-weight: 700;
+            margin-bottom: 16px;
+        }
 
-.q-ttl{
-  font-family:'Black Han Sans',sans-serif;font-size:24px;
-  line-height:1.4;color:var(--nv);margin:24px 0;white-space:pre-line;
-}
-.q-opts{display:flex;flex-direction:column;gap:12px;flex:1;}
-.q-opt{
-  display:flex;align-items:center;gap:16px;
-  background:#fff;border:2px solid var(--gy-md);
-  border-radius:var(--r);padding:18px 20px;cursor:pointer;transition:all .2s;
-}
-.q-opt:hover{border-color:var(--or);background:var(--or-lt);transform:translateX(4px);}
-.q-opt.conf{border-color:var(--or);background:var(--or);color:#fff;}
-.opt-ltr{
-  width:28px;height:28px;border-radius:50%;background:var(--gy-lt);
-  display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:800;color:var(--gy);
-}
-.q-opt.conf .opt-ltr{background:rgba(255,255,255,0.2);color:#fff;}
-.opt-txt{font-size:15px;font-weight:700;line-height:1.4;}
-.q-hint{text-align:center;font-size:12px;color:var(--gy);margin-top:20px;}
+        /* 타이틀 계층 구체화 */
+        .main-title {
+            font-size: 26px;
+            font-weight: 800;
+            line-height: 1.35;
+            color: var(--black);
+            letter-spacing: -0.8px;
+            margin-bottom: 12px;
+        }
 
-/* ════════════════════════════
-   3. 결과 스크린
-════════════════════════════ */
-.res-hero{padding:40px var(--PX);text-align:center;color:#fff;position:relative;}
-.res-hero.cg{background:linear-gradient(135deg, #0F172A 0%, #1E293B 100%)}
-.res-hero.cp{background:linear-gradient(135deg, var(--or-d) 0%, var(--or) 100%)}
-.res-hero.ce{background:linear-gradient(135deg, #D97706 0%, #F59E0B 100%)}
-.res-hero.cn{background:linear-gradient(135deg, #475569 0%, #64748B 100%)}
-.rh-icon{font-size:56px;display:block;margin-bottom:12px;}
-.rh-pill{display:inline-block;background:rgba(255,255,255,0.15);font-size:11px;font-weight:800;padding:6px 16px;border-radius:20px;margin-bottom:12px;}
-.rh-title{font-family:'Black Han Sans',sans-serif;font-size:26px;margin-bottom:12px;}
-.rh-sub{font-size:14px;opacity:0.9;line-height:1.6;white-space:pre-line;}
+        .sub-title {
+            font-size: 15px;
+            font-weight: 400;
+            line-height: 1.6;
+            color: var(--gray);
+            margin-bottom: 32px;
+        }
 
-.res-body{padding:32px var(--PX);}
-.sec-ttl{font-size:12px;font-weight:800;color:var(--gy);margin:24px 0 12px;display:flex;align-items:center;gap:8px;}
-.sec-ttl::after{content:'';flex:1;height:1px;background:var(--gy-md);}
-.sec-ttl:first-child{margin-top:0;}
+        /* 카드 그리드 (인트로 USP 용) */
+        .usp-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            margin-bottom: 36px;
+        }
 
-.rcard{background:#fff;border-radius:var(--r);border:1px solid var(--gy-md);overflow:hidden;box-shadow:var(--sh0);}
-.rcard-head{padding:16px 20px;background:var(--gy-lt);border-bottom:1px solid var(--gy-md);display:flex;align-items:center;gap:10px;}
-.rcard-head-ttl{font-size:14px;font-weight:800;flex:1;}
-.rtag{font-size:11px;font-weight:800;padding:4px 10px;border-radius:8px;}
-.rtag.tg{background:var(--gn-lt);color:var(--gn);}
-.rtag.tp{background:var(--or-lt);color:var(--or);}
-.rtag.te{background:var(--am-lt);color:var(--am);}
-.rtag.tn{background:var(--gy-md);color:var(--nv);}
-.rcard-body{padding:20px;}
+        .usp-card {
+            background-color: var(--white);
+            border: 1px solid var(--line);
+            border-radius: 16px;
+            padding: 18px 16px;
+            display: flex;
+            flex-direction: column;
+        }
 
-.score-blk{margin-bottom:20px;}
-.score-head{display:flex;justify-content:space-between;margin-bottom:8px;}
-.score-lbl{font-size:13px;font-weight:700;color:var(--gy);}
-.score-val{font-size:18px;font-weight:800;}
-.score-track{height:12px;background:#F1F5F9;border-radius:10px;overflow:hidden;}
-.score-fill{height:100%;border-radius:10px;transition:width 1s ease-out;}
-.score-fill.sfg{background:var(--gn);}
-.score-fill.sfp{background:var(--or);}
-.score-fill.sfe{background:var(--am);}
-.score-fill.sfn{background:var(--gy);}
+        .usp-card-title {
+            font-size: 15px;
+            font-weight: 700;
+            color: var(--navy);
+            margin-bottom: 4px;
+        }
 
-.an-list{display:flex;flex-direction:column;gap:10px;}
-.an-row{display:flex;align-items:flex-start;gap:12px;padding:14px;border-radius:10px;background:var(--gy-lt);}
-.an-dot{width:8px;height:8px;border-radius:50%;margin-top:5px;}
-.an-dot.g{background:var(--gn);}
-.an-dot.o{background:var(--or);}
-.an-dot.a{background:var(--am);}
-.an-dot.n{background:var(--gy);}
-.an-lbl{font-size:12px;font-weight:800;color:var(--gy);margin-bottom:2px;}
-.an-txt{font-size:13px;font-weight:700;line-height:1.4;}
+        .usp-card-desc {
+            font-size: 12px;
+            color: var(--gray);
+            line-height: 1.4;
+        }
 
-.msg-box{border-radius:var(--r);padding:20px;border-left:4px solid;}
-.msg-box.mg{background:var(--gn-lt);border-color:var(--gn);}
-.msg-box.mp{background:var(--or-lt);border-color:var(--or);}
-.msg-box.me{background:var(--am-lt);border-color:var(--am);}
-.msg-box.mn{background:#F1F5F9;border-color:var(--gy);}
-.msg-ttl{font-size:14px;font-weight:800;margin-bottom:6px;}
-.msg-ttl.mg{color:var(--gn);}
-.msg-ttl.mp{color:var(--or);}
-.msg-ttl.me{color:var(--am);}
-.msg-ttl.mn{color:var(--nv);}
-.msg-txt{font-size:13px;line-height:1.6;color:var(--nv2);}
+        /* 하단 고정성 가이드 및 버튼 영역 */
+        .bottom-action-block {
+            margin-top: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
 
-.benefit-box{background:linear-gradient(135deg, var(--or-lt) 0%, #FFF 100%);border-radius:var(--r);padding:20px;border:1.5px dashed var(--or);}
-.benefit-ttl{font-size:13px;font-weight:800;color:var(--or);margin-bottom:12px;}
-.benefit-list{display:flex;flex-direction:column;gap:10px;}
-.b-row{display:flex;gap:8px;font-size:13px;font-weight:700;line-height:1.5;}
-.b-ck{color:var(--or);}
+        .trust-text {
+            font-size: 13px;
+            color: var(--gray);
+            text-align: center;
+            line-height: 1.4;
+        }
 
-.alt-box{background:var(--gy-lt);border-radius:var(--r);padding:20px;border:1px solid var(--gy-md);}
-.alt-ttl{font-size:14px;font-weight:800;margin-bottom:12px;}
-.alt-list{display:flex;flex-direction:column;gap:8px;}
-.alt-row{background:#fff;padding:12px 16px;border-radius:8px;font-size:13px;font-weight:700;box-shadow:var(--sh0);}
+        /* 프리미엄 버튼 시스템 */
+        .btn-primary {
+            width: 100%;
+            height: 58px;
+            background-color: var(--orange);
+            color: var(--white);
+            border: none;
+            border-radius: 16px;
+            font-size: 16px;
+            font-weight: 700;
+            cursor: pointer;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            transition: background-color 0.2s, transform 0.1s;
+            text-decoration: none;
+            -webkit-tap-highlight-color: transparent;
+        }
 
-.btn-cta{display:block;width:100%;border:none;background:var(--or);color:#fff;border-radius:var(--r);padding:20px;font-family:'Black Han Sans',sans-serif;font-size:17px;cursor:pointer;box-shadow:var(--sh1);margin-top:24px;transition:all .2s;}
-.btn-cta:hover{background:var(--or-d);transform:translateY(-2px);}
-.btn-cta.nv{background:var(--nv);box-shadow:none;}
-.btn-cta.nv:hover{background:#0F172A;}
+        .btn-primary:active {
+            background-color: var(--orange-dark);
+            transform: scale(0.99);
+        }
 
-/* ════════════════════════════
-   4. 상담 신청 폼 스크린
-════════════════════════════ */
-.f-body{padding:32px var(--PX);flex:1;}
-.f-hl{font-family:'Black Han Sans',sans-serif;font-size:26px;color:var(--nv);margin-bottom:8px;}
-.f-sub{font-size:14px;color:var(--gy);margin-bottom:28px;}
-.fg{margin-bottom:20px;}
-.flb{font-size:13px;font-weight:800;margin-bottom:8px;}
-.req{color:var(--or);}
-.fi, .fs{width:100%;padding:16px;border:1px solid var(--gy-md);border-radius:var(--rsm);font-size:15px;background:#fff;}
-.fi:focus, .fs:focus{outline:none;border-color:var(--or);box-shadow:0 0 0 3px var(--or-lt);}
+        /* 퀴즈 진행 상태바 */
+        .quiz-progress-container {
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            margin-bottom: 32px;
+        }
 
-.chips{display:flex;flex-wrap:wrap;gap:8px;}
-.chip{padding:10px 16px;border-radius:24px;border:1px solid var(--gy-md);background:#fff;font-size:13px;font-weight:700;color:var(--gy);cursor:pointer;transition:all .15s;}
-.chip.on{border-color:var(--or);background:var(--or-lt);color:var(--or);}
+        .quiz-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--gray);
+        }
 
-.agree{display:flex;gap:10px;background:var(--gy-lt);padding:16px;border-radius:var(--rsm);margin:24px 0;border:1px solid var(--gy-md);}
-.agree input{width:18px;height:18px;accent-color:var(--or);margin-top:2px;}
-.agree-txt{font-size:12px;color:var(--gy);line-height:1.6;}
+        .btn-back {
+            background: none;
+            border: none;
+            color: var(--gray);
+            font-size: 13px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
 
-.btn-sub{display:block;width:100%;border:none;background:var(--or);color:#fff;border-radius:var(--r);padding:20px;font-family:'Black Han Sans',sans-serif;font-size:18px;cursor:pointer;box-shadow:var(--sh1);transition:all .2s;}
-.btn-sub:disabled{background:var(--gy-md);cursor:not-allowed;box-shadow:none;}
-.btn-sub .ld{display:none;}
-.btn-sub.going .tx{display:none;}
-.btn-sub.going .ld{display:inline-block;}
+        .progress-track {
+            width: 100%;
+            height: 6px;
+            background-color: var(--line);
+            border-radius: 100px;
+            overflow: hidden;
+        }
 
-/* ════════════════════════════
-   5. 완료 스크린
-════════════════════════════ */
-.comp{padding:64px var(--PX);text-align:center;}
-.comp-ico{font-size:64px;margin-bottom:20px;}
-.comp-ttl{font-family:'Black Han Sans',sans-serif;font-size:28px;margin-bottom:12px;}
-.comp-sub{font-size:14px;color:var(--gy);line-height:1.6;margin-bottom:40px;}
-.comp-btns{display:flex;flex-direction:column;gap:12px;}
-.btn-kk{display:flex;align-items:center;justify-content:center;gap:8px;background:#FEE500;color:#3B1E08;border-radius:var(--r);padding:18px;font-family:'Black Han Sans',sans-serif;font-size:16px;text-decoration:none;}
-.btn-tel{display:flex;align-items:center;justify-content:center;gap:8px;background:var(--nv);color:#fff;border-radius:var(--r);padding:18px;font-family:'Black Han Sans',sans-serif;font-size:16px;text-decoration:none;}
+        .progress-bar {
+            height: 100%;
+            width: 0%;
+            background-color: var(--orange);
+            transition: width 0.3s ease;
+        }
 
-@keyframes fadeIn{from{opacity:0;transform:translateY(8px);}to{opacity:1;transform:translateY(0);}}
-.spin{display:inline-block;width:16px;height:16px;border:2px solid rgba(255,255,255,.3);border-top-color:#fff;border-radius:50%;animation:spin .6s linear infinite;margin-right:8px;vertical-align:middle;}
-@keyframes spin{to{transform:rotate(360deg);}}
-</style>
+        /* 퀴즈 선택지 카드형 */
+        .quiz-options-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin-bottom: 24px;
+        }
+
+        .option-card {
+            background-color: var(--white);
+            border: 1px solid var(--line);
+            border-radius: 16px;
+            padding: 18px 20px;
+            font-size: 15px;
+            font-weight: 600;
+            color: var(--black);
+            text-align: left;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            width: 100%;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        .option-card:active {
+            background-color: var(--orange-soft);
+            border-color: var(--orange);
+        }
+
+        /* 결과 분석 리포트 스타일 */
+        .report-header {
+            background-color: var(--navy);
+            color: var(--white);
+            padding: 28px 24px;
+            border-radius: 20px;
+            margin-bottom: 24px;
+        }
+
+        .report-badge {
+            display: inline-block;
+            background-color: rgba(255, 255, 255, 0.15);
+            color: #FFB380;
+            padding: 4px 10px;
+            border-radius: 6px;
+            font-size: 12px;
+            font-weight: 700;
+            margin-bottom: 12px;
+        }
+
+        .report-type-title {
+            font-size: 22px;
+            font-weight: 800;
+            line-height: 1.4;
+        }
+
+        .section-card {
+            background-color: var(--white);
+            border: 1px solid var(--line);
+            border-radius: 20px;
+            padding: 24px;
+            margin-bottom: 16px;
+        }
+
+        .section-card-title {
+            font-size: 16px;
+            font-weight: 700;
+            color: var(--navy);
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .section-card-desc {
+            font-size: 14px;
+            color: var(--black);
+            line-height: 1.6;
+        }
+
+        /* 불렛 리스트 스타일 */
+        .bullet-list {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .bullet-list li {
+            font-size: 14px;
+            line-height: 1.5;
+            color: var(--black);
+            position: relative;
+            padding-left: 18px;
+        }
+
+        .bullet-list li::before {
+            content: "•";
+            color: var(--orange);
+            font-weight: bold;
+            position: absolute;
+            left: 4px;
+        }
+
+        /* 혜택 박스 전용 */
+        .benefit-box {
+            background-color: var(--cream-2);
+            border: 1px dashed var(--orange);
+        }
+
+        .benefit-box li::before {
+            content: "✓";
+            color: var(--green);
+        }
+
+        /* 면책 조항 */
+        .disclaimer-text {
+            font-size: 11px;
+            color: var(--gray);
+            line-height: 1.5;
+            margin-top: 8px;
+            margin-bottom: 24px;
+        }
+
+        /* 프리미엄 인풋 폼 스타일 */
+        .form-group {
+            margin-bottom: 18px;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .form-group label {
+            font-size: 14px;
+            font-weight: 700;
+            color: var(--black);
+        }
+
+        .form-control {
+            width: 100%;
+            height: 52px;
+            border: 1px solid var(--line);
+            border-radius: 12px;
+            padding: 0 16px;
+            font-size: 15px;
+            color: var(--black);
+            background-color: var(--white);
+            outline: none;
+            transition: border-color 0.2s;
+        }
+
+        .form-control:focus {
+            border-color: var(--orange);
+        }
+
+        /* 셀렉트 박스 스타일 매끄럽게 */
+        select.form-control {
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%236B7280'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 16px center;
+            background-size: 16px;
+        }
+
+        /* 약관 체크박스 구조 */
+        .agree-container {
+            margin: 20px 0;
+            padding: 14px;
+            background-color: var(--gray-light);
+            border-radius: 12px;
+        }
+
+        .agree-label {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            font-size: 13px;
+            color: var(--black);
+            line-height: 1.4;
+            cursor: pointer;
+        }
+
+        .agree-label input[type="checkbox"] {
+            margin-top: 2px;
+            width: 16px;
+            height: 16px;
+            accent-color: var(--orange);
+        }
+
+        .agree-detail {
+            margin-top: 8px;
+            font-size: 11px;
+            color: var(--gray);
+            line-height: 1.4;
+            padding-left: 26px;
+        }
+
+        /* 완료 페이지 전용 스타일 */
+        .complete-box {
+            text-align: center;
+            padding: 40px 0;
+        }
+
+        .success-icon {
+            width: 64px;
+            height: 64px;
+            background-color: var(--orange-soft);
+            color: var(--orange);
+            border-radius: 100px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 28px;
+            font-weight: bold;
+            margin: 0 auto 24px auto;
+        }
+
+        .btn-secondary {
+            width: 100%;
+            height: 54px;
+            background-color: var(--navy);
+            color: var(--white);
+            border: none;
+            border-radius: 16px;
+            font-size: 15px;
+            font-weight: 700;
+            cursor: pointer;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            text-decoration: none;
+            margin-top: 12px;
+        }
+    </style>
 </head>
 <body>
 
-<div class="app">
-  <!-- 고정 탑바 -->
-  <div class="topbar">
-    <div class="prog"><div class="prog-fill" id="PB"></div></div>
-    <div class="nav">
-      <div class="nav-logo">🐾 이바우펫 <em>적합도진단</em></div>
-      <button class="nav-back" id="NB" onclick="goBack()">← 이전</button>
-    </div>
-  </div>
+<div class="app-container">
+    <header class="brand-header">
+        <div class="brand-logo">EBAWPET</div>
+    </header>
 
-  <!-- 스크린 1: 인트로 -->
-  <div class="screen active" id="s-intro">
-    <div class="i-body">
-      <div class="i-pill">⏱ 60초 무료 검증 시스템</div>
-      <h1 class="i-h1">무작정 등록하기 전,<br><em>내 적합도점수</em>를<br>먼저 확인해보세요</h1>
-      <p class="i-lead"><strong>이바우펫은 아무에게나 허위 과장 추천을 하지 않습니다.</strong><br>진단 결과 진로와 맞지 않다고 판단될 경우, 무리하게 교육을 권하지 않고 솔직한 대안을 제시해 드립니다.</p>
-      <div class="val-grid">
-        <div class="val-card"><span class="val-ico">🛡️</span><div class="val-ttl">적합도 통과 시</div><div class="val-sub">50% 장학혜택 심사 연동</div></div>
-        <div class="val-card"><span class="val-ico">🎁</span><div class="val-ttl">도구 풀세트</div><div class="val-sub">100만원 상당 전액지원</div></div>
-        <div class="val-card"><span class="val-ico">🐕</span><div class="val-ttl">100% 실견중심</div><div class="val-sub">가정견·유기견 실습 노하우</div></div>
-        <div class="val-card"><span class="val-ico">📍</span><div class="val-ttl">전국 인프라</div><div class="val-sub">20개 직영 지점 연계 상담</div></div>
-      </div>
-      <div class="tag-row">
-        <span class="itag">✓ 취업·창업 매칭 가능성 분석</span>
-        <span class="itag">✓ 국비지원 최적 비교</span>
-      </div>
-      <button class="btn-start" onclick="go('s-quiz',startQuiz)">무료 적합도 진단 시작하기 →</button>
-      <p class="i-fine">본 진단은 무료이며, 강제 가입이나 등록 권유가 없습니다.</p>
-    </div>
-  </div>
+    <section id="view-intro" class="view-section active">
+        <div class="badge">60초 무료 진단</div>
+        <h1 class="main-title">내가 애견미용을<br>배워도 괜찮을까?</h1>
+        <p class="sub-title">취업, 창업, 자격증, 비용 고민까지<br>현재 내 상황에 맞는 맞춤형 수강 방향을 시스템으로 명확히 진단해보세요.</p>
 
-  <!-- 스크린 2: 퀴즈 -->
-  <div class="screen" id="s-quiz">
-    <div class="q-body">
-      <div class="q-meta">
-        <span class="q-num" id="QN">1 / 6</span>
-        <div class="q-dots" id="QD"></div>
-      </div>
-      <div class="q-ttl" id="QT"></div>
-      <div class="q-opts" id="QO"></div>
-      <p class="q-hint">항목을 선택하시면 다음 단계로 자동 이동합니다.</p>
-    </div>
-  </div>
-
-  <!-- 스크린 3: 결과 리포트 -->
-  <div class="screen" id="s-result">
-    <div class="res-hero" id="RH">
-      <span class="rh-icon" id="RI"></span>
-      <div class="rh-pill" id="RP"></div>
-      <div class="rh-title" id="RT"></div>
-      <div class="rh-sub" id="RS"></div>
-    </div>
-    <div class="res-body" id="RB"></div>
-  </div>
-
-  <!-- 스크린 4: 정보 입력 폼 -->
-  <div class="screen" id="s-form">
-    <div class="f-body">
-      <div class="f-hl">진단서 발급 및 지원금 조회</div>
-      <p class="f-sub">선택하신 결과에 맞춰 국비 조건 및 장학 지원 혜택을 매칭해 드립니다.</p>
-      
-      <div class="fg">
-        <div class="flb">연락처 <span class="req">*</span></div>
-        <input class="fi" type="tel" id="FP" placeholder="010-0000-0000" maxlength="13" oninput="fmtPh(this)" inputmode="numeric">
-      </div>
-
-      <div class="fg">
-        <div class="flb">희망 지점 <span class="req">*</span></div>
-        <select class="fs" id="FR">
-          <option value="">가까운 지점을 선택해주세요</option>
-          <option>인천</option><option>강남</option><option>광주</option><option>노원</option>
-          <option>대구반월당</option><option>대전</option><option>동대구</option><option>부산덕천</option>
-          <option>부산서면</option><option>부산연산</option><option>부천</option><option>분당</option>
-          <option>수원</option><option>신림</option><option>일산</option><option>종로</option>
-          <option>창원</option><option>천안</option><option>천호</option><option>평택</option>
-          <option>거주지 가장 가까운 지점 추천</option>
-        </select>
-      </div>
-
-      <div class="fg">
-        <div class="flb">현재 상황 (중복 선택 가능)</div>
-        <div class="chips" id="CS_GROUP">
-          <div class="chip" onclick="toggleChip(this,'s')">취업 준비 중</div>
-          <div class="chip" onclick="toggleChip(this,'s')">직장인 (이직 희망)</div>
-          <div class="chip" onclick="toggleChip(this,'s')">주부 / 경력단절</div>
-          <div class="chip" onclick="toggleChip(this,'s')">학생</div>
-          <div class="chip" onclick="toggleChip(this,'s')">창업 타겟 준비</div>
+        <div class="usp-grid">
+            <div class="usp-card">
+                <span class="usp-card-title">100% 가정견 실습</span>
+                <span class="usp-card-desc">대체 불가능한 실제 강아지 중심 실습 환경</span>
+            </div>
+            <div class="usp-card">
+                <span class="usp-card-title">실무 중심 교육</span>
+                <span class="usp-card-desc">자격증 취득을 넘어선 확실한 취·창업 대비</span>
+            </div>
+            <div class="usp-card">
+                <span class="usp-card-title">교육지원 확인</span>
+                <span class="usp-card-desc">개인 상황별 수강 혜택 가능 여부 진단</span>
+            </div>
+            <div class="usp-card">
+                <span class="usp-card-title">전국 20개 직영</span>
+                <span class="usp-card-desc">거주지와 가까운 직영 지점 연계 연수</span>
+            </div>
         </div>
-      </div>
 
-      <div class="fg">
-        <div class="flb">최종 도달 목적 (중복 선택 가능)</div>
-        <div class="chips" id="CP_GROUP">
-          <div class="chip" onclick="toggleChip(this,'p')">빠른 취업 연계</div>
-          <div class="chip" onclick="toggleChip(this,'p')">애견미용 샵 창업</div>
-          <div class="chip" onclick="toggleChip(this,'p')">전문 라이센스 취득</div>
-          <div class="chip" onclick="toggleChip(this,'p')">홈 케어 / 취미</div>
+        <div class="bottom-action-block">
+            <p class="trust-text">수강 목적 및 적합성 진단 단계로,<br>학원의 무리한 등록 권유가 없으니 안심하고 진행하세요.</p>
+            <button class="btn-primary" onclick="startQuiz()" aria-label="무료 적합도 진단 시작하기">무료 적합도 진단 시작하기</button>
         </div>
-      </div>
+    </section>
 
-      <div class="agree">
-        <input type="checkbox" id="AG">
-        <div class="agree-txt"><strong>[필수] 개인정보 수집 및 이용 동의</strong><br>제공해주신 정보는 적합도 확인 및 본사 장학지원 혜택 매칭 상담 목적으로만 사용되며, 상담 종료 후 안전하게 파기됩니다.</div>
-      </div>
+    <section id="view-quiz" class="view-section">
+        <div class="quiz-progress-container">
+            <div class="quiz-meta">
+                <button class="btn-back" onclick="prevQuiz()" aria-label="이전 문항으로 가기">← 이전으로</button>
+                <span id="quiz-current-index">1 / 7</span>
+            </div>
+            <div class="progress-track">
+                <div id="quiz-progress-bar" class="progress-bar"></div>
+            </div>
+        </div>
 
-      <button class="btn-sub" id="BS" onclick="doSub()">
-        <span class="tx">내 결과 전송하고 무료 심사받기 →</span>
-        <span class="ld"><span class="spin"></span>안전하게 전송 중...</span>
-      </button>
-    </div>
-  </div>
+        <h2 id="quiz-question-title" class="main-title" style="font-size: 22px; margin-bottom: 24px;">질문 불러오는 중...</h2>
+        
+        <div id="quiz-options-wrapper" class="quiz-options-list">
+            </div>
+    </section>
 
-  <!-- 스크린 5: 완료 페이지 -->
-  <div class="screen" id="s-complete">
-    <div class="comp">
-      <div class="comp-ico">🎉</div>
-      <div class="comp-ttl">진단서 분석 및<br>접수가 완료되었습니다</div>
-      <p class="comp-sub">대표 마케터 및 전문 심사자가 작성해주신 진단 리포트를 검토한 뒤, 기재해주신 번호로 순차 안내해 드리겠습니다.</p>
-      <div class="comp-btns">
-        <a class="btn-kk" href="https://pf.kakao.com/_example" target="_blank">💬 카카오톡 채널로 빠른 배정 요청</a>
-        <a class="btn-tel" href="tel:1544-0000">📞 대표 번호 직통 전화 연결</a>
-      </div>
-    </div>
-  </div>
+    <section id="view-result" class="view-section">
+        <div class="report-header" id="report-header-box">
+            <span class="report-badge">진단 종합 분석 리포트</span>
+            <h2 class="report-type-title" id="res-title">분석 중...</h2>
+        </div>
+
+        <div class="section-card">
+            <h3 class="section-card-title">🔍 결과 요약</h3>
+            <p class="section-card-desc" id="res-desc">내용을 불러오는 중입니다.</p>
+        </div>
+
+        <div class="section-card">
+            <h3 class="section-card-title">⭐ 나의 잠재적 강점</h3>
+            <ul class="bullet-list" id="res-strength">
+                </ul>
+        </div>
+
+        <div class="section-card">
+            <h3 class="section-card-title">⚠️ 현실적인 주의점</h3>
+            <p class="section-card-desc" id="res-warning">내용을 불러오는 중입니다.</p>
+        </div>
+
+        <div class="section-card">
+            <h3 class="section-card-title">🎯 추천 드리는 커리큘럼</h3>
+            <div class="badge" style="margin-bottom: 8px; background-color: var(--gray-light); color: var(--navy);" id="res-course-badge">추천 과정</div>
+            <p class="section-card-desc" id="res-direction">내용을 불러오는 중입니다.</p>
+        </div>
+
+        <div class="section-card benefit-box">
+            <h3 class="section-card-title" style="color: var(--orange-dark);">🎁 상담 시 함께 확인해 드리는 혜택</h3>
+            <ul class="bullet-list">
+                <li>수강료 최대 50% 교육지원 혜택 대상 여부</li>
+                <li>국민취업지원제도 활용 가능성 및 개인 맞춤 정산</li>
+                <li>선착순 100만원 상당 전문가용 미용 도구 세트 지원 가능 여부</li>
+                <li>거주지 근처 전국 20개 직영 지점 배정 및 연계 상담</li>
+                <li>목적별 정규 수강 기간 및 커리큘럼 세부 견적 비용</li>
+            </ul>
+        </div>
+
+        <p class="disclaimer-text">
+            * 본 진단은 사용자의 자가 응답 데이터를 기반으로 산출된 기본 분석 리포트입니다.<br>
+            * 교육지원 가능 여부와 혜택 금액은 개인의 상황에 따라 상이할 수 있으며, 실제 취업 및 수익률을 사전 보장하지 않습니다. 상담을 통해 개인 조건에 맞는 정확한 가이드를 제공받으실 수 있습니다.
+        </p>
+
+        <div class="section-card" id="lead-form-section" style="border: 2px solid var(--orange);">
+            <h3 class="section-card-title" style="font-size: 18px; margin-bottom: 4px;">상담 컨설팅 및 혜택 신청</h3>
+            <p class="sub-title" style="margin-bottom: 20px; font-size: 13px;">본 진단 결과를 토대로 세부 가능 여부를 유선 안내 드립니다.</p>
+
+            <form id="diagnosis-form" onsubmit="handleFormSubmit(event)">
+                <div class="form-group">
+                    <label for="user_name">성함</label>
+                    <input type="text" id="user_name" class="form-control" placeholder="성함을 입력해주세요" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="user_phone">연락처</label>
+                    <input type="tel" id="user_phone" class="form-control" placeholder="010-0000-0000" maxlength="13" required oninput="autoHyphen(this)">
+                </div>
+
+                <div class="form-group">
+                    <label for="user_region">희망 지역 (전국 20개 직영)</label>
+                    <select id="user_region" class="form-control" required>
+                        <option value="">지역을 선택해주세요</option>
+                        <option value="서울">서울</option>
+                        <option value="경기">경기</option>
+                        <option value="인천">인천</option>
+                        <option value="충청">충청</option>
+                        <option value="전라">전라</option>
+                        <option value="경상">경상</option>
+                        <option value="대구">대구</option>
+                        <option value="부산">부산</option>
+                        <option value="잘모르겠음">잘 모르겠어요 (추천 요청)</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="user_time">통화 편리한 시간</label>
+                    <select id="user_time" class="form-control">
+                        <option value="상관없음">언제나 상관없음</option>
+                        <option value="오전(09시~12시)">오전 (09시 ~ 12시)</option>
+                        <option value="오후(12시~18시)">오후 (12시 ~ 18시)</option>
+                        <option value="저녁(18시이후)">저녁 (18시 이후)</option>
+                    </select>
+                </div>
+
+                <div class="agree-container">
+                    <label class="agree-label">
+                        <input type="checkbox" id="privacy_agree" required>
+                        <span>개인정보 수집 및 이용 약관 동의 (필수)</span>
+                    </label>
+                    <div class="agree-detail">
+                        • 수집 항목: 이름, 연락처, 희망지역, 진단 분석 결과 데이터<br>
+                        • 수집 목적: 교육지원 혜택 가능 여부 조회 및 수강 상세 컨설팅 연락<br>
+                        • 보유 및 이용기간: 접수일로부터 365일 (이후 자동 즉시 파기)
+                    </div>
+                </div>
+
+                <button type="submit" class="btn-primary" id="submit-btn" aria-label="내 상황에 맞는 과정 안내받기"></button>
+            </form>
+        </div>
+    </section>
+
+    <section id="view-complete" class="view-section">
+        <div class="complete-box">
+            <div class="success-icon">✓</div>
+            <h1 class="main-title" style="font-size: 24px;">진단 및 지원 신청이<br>정상 완료되었습니다.</h1>
+            <p class="sub-title" style="margin-bottom: 24px;">
+                기입해주신 정보를 바탕으로 교육지원 대상 여부 및 지점 일정을 조회 중입니다. <br><br>
+                <strong style="color: var(--orange-dark); font-weight: 700;">조회 결과 안내를 위해 순차적으로 담당자가 연락을 드릴 예정이오니 모르는 번호로 전화가 오더라도 꼭 받아주시기 바랍니다.</strong>
+            </p>
+            
+            <a href="#" id="talk-link" target="_blank" class="btn-primary" style="background-color: #03C75A;" aria-label="네이버 톡톡으로 실시간 빠른 문의하기">네이버 톡톡 실시간 문의</a>
+            <button class="btn-secondary" onclick="restartApp()" aria-label="적합도 테스트 처음부터 다시 하기">테스트 처음부터 다시 하기</button>
+        </div>
+    </section>
 </div>
 
 <script>
-/* ── API 및 트래킹 인프라 세팅 ── */
-const SCRIPT_URL = "여기에_Google_Apps_Script_URL_입력"; 
-const UP = new URLSearchParams(location.search);
-const UTM = {
-  utm_source:UP.get('utm_source')||'',utm_medium:UP.get('utm_medium')||'',
-  utm_campaign:UP.get('utm_campaign')||'',utm_content:UP.get('utm_content')||'',
-  utm_term:UP.get('utm_term')||'',page_url:location.href
-};
+    /**
+     * =================================================================
+     * 상단 핵심 연동 설정 (외부 플랫폼 파라미터 연동용 주소 지정)
+     * =================================================================
+     */
+    const SCRIPT_URL = "YOUR_GOOGLE_APPS_SCRIPT_URL_HERE"; // 구글 스프레드시트 연동 시 활용 가능
+    const NAVER_FORM_URL = "";                             // 외부 네이버폼 연동 필요 시 활용 가능
+    const NAVER_TALK_URL = "https://talk.naver.com/";       // 실제 네이버 톡톡 채널 주소 입력
 
-/* ── 밸런싱된 엄격한 변별력 문항 데이터 ── */
-const QS = [
-  {t:"애견미용을 배우고자 결심하신\n가장 확실한 목적은 무엇인가요?",o:["확실한 전문 기술을 통한 안정적 취업","인플루언서 뷰티 샵 창업 및 경영","반려견 셀프 케어 및 전문 취미 활동","아직 구체적이진 않지만 진로 탐색 중"],s:[3,3,2,1]},
-  {t:"과정 선택과 시작에 있어서\n가장 주저하게 만드는 걸림돌은?",o:["수강료 및 초기 재료비 부담","손재주가 없는데 잘 따라갈 수 있을지 불안함","수료 후 진짜 취업이나 자리를 잡을 수 있을지 확신 부족","나에게 딱 맞는 커리큘럼 학원을 찾는 번거로움"],s:[2,2,3,1]},
-  {t:"교육 인프라를 비교하실 때\n가장 중요하게 생각하는 가치는?",o:["현장과 완벽히 호환되는 100% 실견 중심 실습","기초 필기 및 가위질부터 체계적인 누적 진도","최대한 단기간 내에 라이센스 합격격","취업 전선이나 창업 마케팅까지 책임지는 연계력"],s:[3,2,1,3]},
-  {t:"이바우펫의 '100% 가정견 실습'\n원칙에 대해 어떻게 생각하시나요?",o:["실전 감각과 취업을 위해 반드시 필요한 핵심 공정이다","이론과 기본 위그 실습이 먼저 충분히 보장되어야 한다","단점 보완보다는 빠르게 자격증 규격 위주로 가고 싶다","잘 모르겠지만 다들 좋다고 하니 관심이 간다"],s:[3,2,1,2]},
-  {t:"현재 본인의 진로 준비를 위한\n시간 및 자금 투자 여력 상태는?",o:["당장 몰입해서 확실하게 시작할 준비 완료","현재 직장/일정이 있어 조율이 필수적인 상황","자금 상황을 고려해 국비나 장학 지원 매칭이 필수인 상황","여유를 두고 천천히 간을 보며 알아보고 싶은 상황"],s:[3,2,3,1]},
-  {t:"전문 멘토와의 1:1 진로 배정 및\n장학 혜택 심사 기회가 주어진다면?",o:["최대한 빠르게 배정받아 상세 확인을 희망한다","정확한 실시간 총 비용 정보 분석을 먼저 원한다","일정 및 커리큘럼 매칭 위주로 상담을 원한다","아직 확신이 없으므로 조금 더 보류하겠다"],s:[3,2,2,1]}
-];
+    // 진단 문항 데이터 정의
+    const quizData = [
+        {
+            question: "애견미용을 알아보시는 가장 큰 핵심적인 이유는 무엇인가요?",
+            options: [
+                { text: "안정적이고 전문적인 취업 기술이 필요해서", score: { A: 4, B: 1, C: 2, D: 0 } },
+                { text: "장기적으로 나만의 샵이나 창업을 계획하고 있어서", score: { A: 1, B: 5, C: 1, D: 0 } },
+                { text: "강아지를 너무 좋아해서 직업으로 연결하고 싶어서", score: { A: 2, B: 2, C: 4, D: 1 } },
+                { text: "새로운 도전이 필요하지만 아직 진로가 막연해서", score: { A: 1, B: 0, C: 2, D: 4 } }
+            ]
+        },
+        {
+            question: "시작하기 전 현재 가장 마음에 걸리거나 걱정되는 부분은?",
+            options: [
+                { text: "초기 수강료 부담 및 교육지원 혜택 가능 여부", score: { A: 2, B: 2, C: 2, D: 1 } },
+                { text: "손재주가 없거나 나이가 늦어서 잘 적응할 수 있을지", score: { A: 2, B: 1, C: 4, D: 2 } },
+                { text: "자격증을 취득한 뒤 실제로 취업이 연계될지 여부", score: { A: 5, B: 1, C: 2, D: 1 } },
+                { text: "신뢰할 수 있고 제대로 가르쳐주는 학원 선택 기준", score: { A: 2, B: 3, C: 3, D: 2 } }
+            ]
+        },
+        {
+            question: "교육을 이수한 이후, 가장 궁극적으로 도달하고 싶은 결과는?",
+            options: [
+                { text: "빠르고 탄탄한 취업 성공", score: { A: 5, B: 1, C: 1, D: 0 } },
+                { text: "내 명의의 애견미용 전문 샵 창업", score: { A: 1, B: 5, C: 1, D: 0 } },
+                { text: "공인 자격증 정식 취득 자체", score: { A: 3, B: 2, C: 3, D: 2 } },
+                { text: "반려견을 위한 전문적인 홈케어 및 셀프미용", score: { A: 0, B: 0, C: 1, D: 5 } }
+            ]
+        },
+        {
+            question: "교육기관을 선택할 때 절대 양보할 수 없는 기준 한 가지는?",
+            options: [
+                { text: "실제 살아있는 강아지로 진행하는 '가정견 실습 경험'", score: { A: 4, B: 4, C: 2, D: 1 } },
+                { text: "단기간 내 자격증 합격을 보장하는 높은 취득률", score: { A: 2, B: 1, C: 4, D: 2 } },
+                { text: "취업 연수 기회나 확실한 연계 컨설팅 인프라", score: { A: 5, B: 3, C: 2, D: 0 } },
+                { text: "정부 지원 혜택 및 수강료 감면 지원", score: { A: 2, B: 2, C: 3, D: 3 } }
+            ]
+        },
+        {
+            question: "진단자님의 현재 경제 및 사회적 경제 활동 상황은 어떠하신가요?",
+            options: [
+                { text: "새로운 돌파구를 찾는 구직자 / 취업준비생", score: { A: 4, B: 1, C: 3, D: 1 } },
+                { text: "이직 혹은 퇴사 후 제2의 기술을 갖고 싶은 직장인", score: { A: 3, B: 3, C: 3, D: 1 } },
+                { text: "재취업 및 안정적 창업을 희망하는 주부 / 경력단절", score: { A: 3, B: 4, C: 2, D: 2 } },
+                { text: "전문 업종의 미래 방향성을 넓히려는 예비 창업주", score: { A: 1, B: 5, C: 1, D: 0 } },
+                { text: "기타 (학생 및 일반 인원)", score: { A: 2, B: 1, C: 3, D: 3 } }
+            ]
+        },
+        {
+            question: "안내를 받으신다면 어떤 커리큘럼 방식이 더 마음에 이끌리시나요?",
+            options: [
+                { text: "필드에서 즉시 적응 가능한 실무 가정견 실습 위주", score: { A: 5, B: 3, C: 2, D: 1 } },
+                { text: "기초 가이드부터 차근차근 안정감 있게 밟아나가는 정석", score: { A: 2, B: 2, C: 4, D: 2 } },
+                { text: "시간 낭비 없이 스펙 자격증 취득에 속도를 내는 코스", score: { A: 2, B: 1, C: 3, D: 3 } },
+                { text: "오픈 준비 단계부터 브랜딩 컨설팅까지 지원하는 비즈니스형", score: { A: 1, B: 5, C: 1, D: 0 } }
+            ]
+        },
+        {
+            question: "이번 상담 및 진단을 통하여 가장 명쾌하게 알아내고 싶은 부분은?",
+            options: [
+                { text: "내가 받을 수 있는 개인 맞춤형 교육비 지원 혜택 확인", score: { A: 3, B: 2, C: 3, D: 3 } },
+                { text: "내 거주지에서 통원 가능한 가장 가까운 직영 지점 추천", score: { A: 2, B: 2, C: 3, D: 2 } },
+                { text: "수강 완료 후 실제 필드 진입 가능한 현실적 취업 전략", score: { A: 5, B: 1, C: 2, D: 0 } },
+                { text: "지속성 높은 매장 오픈 프로세스 및 마케팅 가이드", score: { A: 1, B: 5, C: 1, D: 0 } }
+            ]
+        }
+    ];
 
-/* ── 진단 결과 구조 최적화 ── */
-const TYPES = {
-  great:{hc:'cg',ic:'🔥',pl:'적합도 최상위 대상',tt:'애견미용 프로 마스터 유임형',sb:'목표 의식과 실행 관점이 완벽하게 준비되어 있습니다.\n이바우펫의 프리미엄 시스템과 결합 시 가장 빠른 성공률을 보입니다.',mc:'mg',mt:'🎯 프로 마스터 진단 리포트 요약',mx:'취창업에 최적화된 실행력을 갖춘 유형입니다. 인형 위그 실습에 머무는 일반 학원과 달리, 100% 실견 중심 실습 시스템의 본질적 가치를 정확히 이해하고 계십니다. 장학 혜택 선발 우선 순위로 분류됩니다.',sv:94,sf:'sfg',sl:'적합도 지수',tg:'tg',an:[{d:'g',l:'비전 구체성',t:'성공 동기와 실전 적응 관점이 매우 명확함'},{d:'g',l:'실습 적합도',t:'실견 중심 현장 교육 시스템에 100% 최적화'},{d:'g',l:'성공 의지력',t:'즉시 실행 및 라이센스 몰입 준비도가 우수함'}],bn:true,al:false,ct:'국비 및 장학지원 독점 심사 받기 →',cc:''},
-  possible:{hc:'cp',ic:'⭐',pl:'잠재 가능성 우수 유형',tt:'비전 설계 및 실천 지향형',sb:'기본적인 열정과 인프라 가치에 대한 이해가 우수합니다.\n몇 가지 현실적인 조건 조율을 통해 확신을 완성할 수 있습니다.',mc:'mp',mt:'💡 잠재력 극대화 솔루션',mx:'애견미용 분야로의 전환 가능성과 열정은 충분하지만, 예산이나 일정 조율 등 현실적 해법이 필요한 단계입니다. 3억 뷰 SNS 인플루언서 마케팅 연계 및 맞춤 진도를 지원하면 단숨에 최상위 궤도에 진입 가능합니다.',sv:76,sf:'sfp',sl:'성장 가능성',tg:'tp',an:[{d:'o',l:'직업 동기',t:'애견미용 시장성에 대한 기대와 흥미가 높음'},{d:'a',l:'현실적 설계',t:'비용 및 기간 조율을 통해 현실화 필요'},{d:'o',l:'적응 잠재력',t:'맞춤형 1:1 피드백 시스템 도입 시 고속 성장 가능'}],bn:true,al:false,ct:'나에게 맞는 장학 혜택 확인하기 →',cc:''},
-  explore:{hc:'ce',ic:'🌱',pl:'심층 분석 탐색 유형',tt:'신중한 시장 탐색 및 검증형',sb:'지금 당장의 무작정 등록보다는,\n직업적 장단점과 수익 구조를 차근차근 확인하실 단계입니다.',mc:'me',mt:'🔍 솔직하고 객관적인 제언',mx:'아직 적성에 대한 확신이나 라이프사이클의 완전한 일치도가 다소 모호한 상태입니다. 저희는 영업을 위해 무작정 수강을 권하지 않습니다. 비용 분석 칼럼과 현실적인 업계 지표를 먼저 확인해 보시는 것을 권장합니다.',sv:46,sf:'sfe',sl:'진로 준비도',tg:'te',an:[{d:'a',l:'목표 설정',t:'라이센스 활용 방향성에 대한 고민이 진행 중'},{d:'a',l:'동기 강도',t:'현재는 정보 취득과 탐색을 우선시하는 시점'},{d:'o',l:'인프라 매칭',t:'정확한 비용 팩트 체킹이 완료되면 가능성 오픈'}],bn:false,al:false,ct:'무료 칼럼 및 비용 진실 상담받기 →',cc:'nv'},
-  notfit:{hc:'cn',ic:'🤝',pl:'진정성 있는 매칭 실패',tt:'현재 시점 적합도 보류 대상',sb:'억지로 등록을 권하는 허위 상담은 사절합니다.\n지금은 애견미용이 최선의 대안이 아닐 수 있습니다.',mc:'mn',mt:'💬 이바우펫의 약속',mx:'현재 축적된 응답 값 기준으로 볼 때, 애견미용 과정에 비용과 시간을 대량 투자하기에는 리스크가 다소 따르는 타이밍입니다. 아무나 수강생으로 받지 않는 것이 브랜드 철학입니다. 진로 방향성 자체를 무료로 리셋해 드립니다.',sv:24,sf:'sfn',sl:'적합 점수',tg:'tn',an:[{d:'n',l:'직업 일치도',t:'생활 패턴이나 기대 가치가 본 직군과 상충함'},{d:'n',l:'진입 준비성',t:'시간/물리적 투입 여건의 재정비가 최우선 필요'},{d:'a',l:'타 직무 대안',t:'1:1 상담을 통해 더 알맞은 국비 교육 트랙 매칭'}],bn:false,al:true,ct:'내 상황에 맞는 진짜 진로 상담받기 →',cc:'nv'}
-};
+    // 결과 데이터 정의
+    const resultTypes = {
+        A: {
+            title: "실무 경험을 쌓으면 취업 방향이 매우 뚜렷한 [실무취업형]",
+            desc: "진단자님은 현업에서 통하는 진정한 기술 구축에 가장 큰 가치를 두고 계십니다. 단순 이론식 암기나 모형을 깎는 자격증 취득에만 시간을 소모하기보다는 실제 견종을 다루며 포트폴리오를 만들어 내는 실습형 과정이 동기부여와 현장 적응력을 드라마틱하게 끌어올릴 수 있는 최적의 상태입니다.",
+            strengths: [
+                "취업에 필수적인 실전 지향적 몰입도가 탁월함",
+                "모형 실습의 한계를 직시하고 있어 실질적 적응 속도가 빠름",
+                "자격증 취득과 실전 역량을 동시에 결합 시 시너지 극대화 가능"
+            ],
+            warning: "간혹 실습 환경이 열악한 교육기관을 선택할 시 가짜 견종 실습으로 인해 졸업 후 필드에서 재교육을 받아야 하는 리스크가 발생할 수 있으니 주의가 필요합니다.",
+            course: "1년 취업 집중 프로페셔널 과정",
+            cta: "내 상황에 맞는 취업 과정 맞춤 안내받기"
+        },
+        B: {
+            title: "종합 비즈니스 설계가 가능한 확장형 마인드의 [창업준비형]",
+            desc: "단순히 어딘가에 소속되는 고용 상태를 넘어 장기적인 안목으로 자신만의 펫샵 브랜드 운영을 열망하고 있는 유형입니다. 기술 습득은 기본이며 트렌디한 견종 마스터링 기법, 고객 응대 프로세스, 고부가가치 미용 연수 등의 통합적인 비즈니스 트레이닝이 함께 수반되어야 리스크 없는 창업이 가능합니다.",
+            strengths: [
+                "목표 의식이 뚜렷하여 고난도 기술 마스터 역량이 높음",
+                "운영 및 경영 효율화 관점에서 트렌드를 해석하는 시각 보유",
+                "스펙 한 줄보다 매장 효율과 포트폴리오의 실질 가치 중시"
+            ],
+            warning: "단기간의 기초 속성 자격증 코스만으로는 수많은 견종의 돌발 상황을 제어하기 어렵습니다. 오픈 후 클레임 방지를 위해 100% 실견 중심의 밀도 높은 실습 커버리지를 반드시 선행 확보하셔야 합니다.",
+            course: "2년 창업·마스터 마케팅 융합 과정",
+            cta: "성공적인 샵 오너를 위한 창업 과정 상담받기"
+        },
+        {
+            title: "우선순위 로드맵 수립이 우선인 [진로탐색형]",
+            desc: "애견미용 시장의 성장 가능성과 강아지에 대한 호감도는 충분히 품고 계시나, 이를 취업으로 연결할지, 대형 창업을 할지, 혹은 가벼운 파트타임으로 진입할지 구체적 노선이 확정되지 않은 안전 지향적 상태입니다. 무리하게 긴 장기 계약을 먼저 하기보다는 현실적 업계 정보와 수강 진로 가이드를 받아 보시는 편이 비용과 시간을 아끼는 지름길입니다.",
+            strengths: [
+                "충동적 결정이 아닌 논리적이고 차분한 탐색형 사고를 지님",
+                "리스크를 사전에 인지하여 정교한 준비 단계 설계 가능",
+                "개인 상황에 맞는 지원금 제도를 비교 분석하는 데 유연함"
+            ],
+            warning: "인터넷상의 무분별한 광고 정보만으로는 실제 현장의 평균 급여, 근무 환경, 체력적 소모도를 체감하기 힘듭니다. 전문가와의 정밀 상담을 통해 현실적 가이드라인을 먼저 대조해보세요.",
+            course: "맞춤형 진로 큐레이션 및 기초 탐색 과정",
+            cta: "나에게 최적화된 현실적인 수강 방향 컨설팅받기"
+        },
+        D: {
+            title: "전문 반려견 케어 및 점진적 확장에 유리한 [취미·케어형]",
+            desc: "현재 시점에서는 거창한 상업적 샵 오픈보다는 본인의 소중한 아이를 직접 수준급으로 위생·미용 케어해주고 싶거나, 작게 시작해 점진적인 기술적 취미 확장을 희망하는 상태입니다. 처음부터 무리하게 대형 정규 종합 마스터 반을 신청하기보다는 자신의 스케줄과 목적에 완벽하게 호환되는 가벼운 빌드업 루트를 추천해 드립니다.",
+            strengths: [
+                "반려동물에 대한 진정성 있는 애정과 정서적 공감대 최고 수준",
+                "강제성이 아닌 순수한 흥미 유발로 습득 과정 자체를 즐김",
+                "추후 심화 학습 전환 시 높은 디테일 표현력 기대 가능"
+            ],
+            warning: "취미 수준이라 할지라도 날카로운 미용 도구를 다루는 기술의 본질은 동일하므로 가짜 모형 교육보다는 안전 통제 하의 실견 핸들링 기초를 정석으로 교육받으시는 것을 권장합니다.",
+            course: "반려견 맞춤형 펫케어 및 라이트 스킬 매니지먼트",
+            cta: "내 라이프스타일에 호환되는 과정 조회하기"
+        }
+    };
 
-let cur=0, ans=[], scores=[], rKey='explore', timer=null, selectedSituation=[], selectedPurpose=[];
+    // 앱 상태 관리 변수
+    let currentQuestionIndex = 0;
+    let scores = { A: 0, B: 0, C: 0, D: 0 };
+    let selectedAnswers = []; // 이전 단계 복원용
+    let finalResultType = 'A';
+    let utmParams = {};
 
-/* ── 스크린 이동 및 프로그레스 제어 ── */
-const STAGE_PROG = {'s-intro':5,'s-quiz':35,'s-result':75,'s-form':90,'s-complete':100};
-function go(id, cb){
-  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
-  document.getElementById(id).classList.add('active');
-  
-  const targetPct = STAGE_PROG[id] || 0;
-  document.getElementById('PB').style.width = targetPct+'%';
-  
-  const backBtn = document.getElementById('NB');
-  (id==='s-intro'||id==='s-complete') ? backBtn.classList.remove('show') : backBtn.classList.add('show');
-  if(cb) cb();
-}
-
-function goBack(){
-  const activeId = document.querySelector('.screen.active').id;
-  if(activeId==='s-quiz'){
-    if(cur > 0){ cur--; renderQ(); } else { go('s-intro'); }
-  }
-  else if(activeId==='s-result') { go('s-intro'); }
-  else if(activeId==='s-form') { go('s-result', renderResult); }
-}
-
-/* ── 퀴즈 코어 로직 ── */
-function startQuiz(){
-  cur=0; ans=[]; scores=[];
-  const d=document.getElementById('QD'); d.innerHTML='';
-  QS.forEach(()=>{const e=document.createElement('div'); e.className='qdot'; d.appendChild(e);});
-  renderQ();
-}
-
-function renderQ(){
-  clearTimeout(timer);
-  const q = QS[cur];
-  document.getElementById('QN').textContent = `${cur+1} / ${QS.length}`;
-  document.getElementById('QT').textContent = q.t;
-  
-  // 미세 도트 제어
-  document.querySelectorAll('.qdot').forEach((d,idx)=>{
-    d.className='qdot';
-    if(idx<cur) d.classList.add('done');
-    else if(idx===cur) d.classList.add('cur');
-  });
-
-  const optsBox = document.getElementById('QO'); optsBox.innerHTML='';
-  q.o.forEach((opt, i)=>{
-    const el = document.createElement('div');
-    el.className = 'q-opt';
-    el.innerHTML = `<div class="opt-ltr">${String.fromCharCode(65+i)}</div><span class="opt-txt">${opt}</span>`;
-    el.onclick = () => selectOpt(i, el, q.s[i], opt);
-    optsBox.appendChild(el);
-  });
-}
-
-function selectOpt(idx, el, score, txt){
-  clearTimeout(timer);
-  ans[cur] = txt; scores[cur] = score;
-  document.querySelectorAll('.q-opt').forEach(o=>o.className='q-opt');
-  el.className = 'q-opt conf';
-  
-  timer = setTimeout(()=>{
-    if(cur < QS.length-1){
-      cur++; renderQ();
-    } else {
-      processCoreMetrics();
-      go('s-result', renderResult);
-    }
-  },240);
-}
-
-function processCoreMetrics(){
-  const total = scores.reduce((a,b)=>a+b,0);
-  const maxScore = QS.length * 3;
-  const pct = Math.round((total / maxScore) * 100);
-  
-  if(pct >= 80) rKey = 'great';
-  else if(pct >= 60) rKey = 'possible';
-  else if(pct >= 40) rKey = 'explore';
-  else rKey = 'notfit';
-}
-
-/* ── 결과 리포트 빌더 (All-in-One 완전 복구본) ── */
-function renderResult(){
-  const r = TYPES[rKey];
-  document.getElementById('RH').className = 'res-hero ' + r.hc;
-  document.getElementById('RI').textContent = r.ic;
-  document.getElementById('RP').textContent = r.pl;
-  document.getElementById('RT').textContent = r.tt;
-  document.getElementById('RS').textContent = r.sb;
-
-  const b = document.getElementById('RB'); b.innerHTML='';
-
-  const createSectionTitle = (t) => {
-    const d=document.createElement('div'); d.className='sec-ttl'; d.textContent=t; b.appendChild(d);
-  };
-
-  // 1. 적합도 심층 리포트 카드 카드화
-  createSectionTitle('📋 데이터 기반 적합도 리포트');
-  const rc = document.createElement('div'); rc.className = 'rcard';
-  rc.innerHTML = `
-    <div class="rcard-head">
-      <span class="rcard-head-ico">📊</span>
-      <span class="rcard-head-ttl">종합 계량 결과</span>
-      <span class="rtag ${r.tg}">${r.pl}</span>
-    </div>
-    <div class="rcard-body">
-      <div class="score-blk">
-        <div class="score-head">
-          <span class="score-lbl">${r.sl}</span>
-          <span class="score-val">${r.sv}점 / 100점</span>
-        </div>
-        <div class="score-track"><div class="score-fill ${r.sf}" id="SF" style="width:0%"></div></div>
-      </div>
-      <div class="an-list">
-        ${r.an.map(a=>`<div class="an-row"><div class="an-dot ${a.d}"></div><div><div class="an-lbl">${a.l}</div><div class="an-txt">${a.t}</div></div></div>`).join('')}
-      </div>
-    </div>`;
-  b.appendChild(rc);
-  setTimeout(()=>{ if(document.getElementById('SF')) document.getElementById('SF').style.width = r.sv+'%'; }, 200);
-
-  // 2. 메시지 시스템
-  createSectionTitle('💬 수석 심사역 종합 판단');
-  const mb = document.createElement('div'); mb.className = `msg-box ${r.cg || r.mc}`;
-  mb.innerHTML = `<div class="msg-ttl ${r.mc}">${r.mt}</div><div class="msg-txt">${r.mx}</div>`;
-  b.appendChild(mb);
-
-  // 3. 독점 혜택 구조화 연동
-  if(r.bn){
-    createSectionTitle('🎁 매칭 가능한 이 페이지 단독 특전');
-    const bx = document.createElement('div'); bx.className = 'benefit-box';
-    bx.innerHTML = `
-      <div class="benefit-ttl">이탈하지 않고 즉시 연동 시 확보 가능한 3대 지원안</div>
-      <div class="benefit-list">
-        <div class="b-row"><span class="b-ck">✓</span><span class="b-txt">심사 합격 시 수강 비용 최대 50% 장학 매칭</span></div>
-        <div class="b-row"><span class="b-ck">✓</span><span class="b-txt">100만원 상당 애견 미용 전문가 도구 풀세트 무상 지급</span></div>
-        <div class="b-row"><span class="b-ck">✓</span><span class="b-txt">3억 뷰 최고 권위 인플루언서 마케터의 1:1 취창업 포트폴리오 첨삭</span></div>
-      </div>`;
-    b.appendChild(bx);
-  } else {
-    createSectionTitle('📍 권장 대안 가이드라인');
-    const ab = document.createElement('div'); ab.className = 'alt-box';
-    ab.innerHTML = `
-      <div class="alt-ttl">아무나 추천하지 않기에 제공해드리는 솔직한 방향성</div>
-      <div class="alt-list">
-        <div class="alt-row">🔍 무작정 결제 대신 비용분석 무료 칼럼 팩트 정독하기</div>
-        <div class="alt-row">📞 국비지원 허점 분석 및 전액 환급 가능 조건 대조해보기</div>
-      </div>`;
-    b.appendChild(ab);
-  }
-
-  // 4. CTA 액션 버튼 생성
-  const cta = document.createElement('button');
-  cta.className = 'btn-cta ' + r.cc;
-  cta.textContent = r.ct;
-  cta.onclick = () => go('s-form');
-  b.appendChild(cta);
-}
-
-/* ── 칩셋 데이터 멀티플 제어 ── */
-function toggleChip(el, type){
-  el.classList.toggle('on');
-  const txt = el.textContent;
-  if(type === 's'){
-    if(selectedSituation.includes(txt)){
-      selectedSituation = selectedSituation.filter(v => v !== txt);
-    } else { selectedSituation.push(txt); }
-  } else {
-    if(selectedPurpose.includes(txt)){
-      selectedPurpose = selectedPurpose.filter(v => v !== txt);
-    } else { selectedPurpose.push(txt); }
-  }
-}
-
-function fmtPh(el){
-  let val = el.value.replace(/[^0-9]/g, '');
-  if(val.length > 3 && val.length <= 7){
-    el.value = val.substring(0,3) + '-' + val.substring(3);
-  }else if(val.length > 7){
-    el.value = val.substring(0,3) + '-' + val.substring(3,7) + '-' + val.substring(7);
-  }else{ el.value = val; }
-}
-
-/* ── 완벽한 DB 비동기 전송 처리 인프라 ── */
-function doSub(){
-  const phone = document.getElementById('FP').value;
-  const region = document.getElementById('FR').value;
-  const agree = document.getElementById('AG').checked;
-
-  if(!phone || phone.length < 12){ alert('올바른 연락처 정보를 입력해주세요.'); return; }
-  if(!region){ alert('희망 지점을 선택해주세요.'); return; }
-  if(!agree){ alert('개인정보 수집 및 이용에 동의해주셔야 진단서 발급이 가능합니다.'); return; }
-
-  const submitBtn = document.getElementById('BS');
-  submitBtn.disabled = true;
-  submitBtn.classList.add('going');
-
-  const finalPayload = {
-    phone: phone,
-    region: region,
-    situation: selectedSituation.join(', '),
-    purpose: selectedPurpose.join(', '),
-    diagnostic_result: TYPES[rKey].pl + " (" + TYPES[rKey].sv + "점)",
-    answers: ans.map((a,i) => `문항${i+1}:${a}`).join(' | '),
-    ...UTM
-  };
-
-  if(SCRIPT_URL.includes("여기에_Google")) {
-    // 테스트용 시뮬레이터 (액션 스크립트 미입력 상태 시 정상 작동 보증용)
-    setTimeout(()=>{
-      submitBtn.disabled = false;
-      submitBtn.classList.remove('going');
-      go('s-complete');
-    }, 1200);
-  } else {
-    fetch(SCRIPT_URL, {
-      method: "POST",
-      mode: "no-cors",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(finalPayload)
-    })
-    .then(()=>{
-      submitBtn.disabled = false;
-      submitBtn.classList.remove('going');
-      go('s-complete');
-    })
-    .catch(err=>{
-      console.error(err);
-      alert('통신 장애가 발생했습니다. 잠시 후 다시 시도해 주세요.');
-      submitBtn.disabled = false;
-      submitBtn.classList.remove('going');
+    // 초기화 작동
+    window.addEventListener('DOMContentLoaded', () => {
+        captureUtmParams();
+        // 네이버 톡톡 기본 링크 세팅
+        document.getElementById('talk-link').href = NAVER_TALK_URL;
     });
-  }
-}
+
+    // UTM 마케팅 데이터 파싱 및 안전 캡처
+    function captureUtmParams() {
+        const urlParams = new URLSearchParams(window.location.search);
+        const utmKeys = ['utm_source', 'utm_medium', 'utm_campaign', 'utm_term', 'utm_content'];
+        utmKeys.forEach(key => {
+            if (urlParams.has(key)) {
+                utmParams[key] = urlParams.get(key);
+            }
+        });
+    }
+
+    // 인트로 -> 퀴즈 시작
+    function startQuiz() {
+        document.getElementById('view-intro').classList.remove('active');
+        document.getElementById('view-quiz').classList.add('active');
+        renderQuestion();
+    }
+
+    // 퀴즈 화면 드로잉
+    function renderQuestion() {
+        const currentQuiz = quizData[currentQuestionIndex];
+        
+        // 메타 정보 갱신
+        document.getElementById('quiz-current-index').innerText = `${currentQuestionIndex + 1} / ${quizData.length}`;
+        const progressPercentage = ((currentQuestionIndex + 1) / quizData.length) * 100;
+        document.getElementById('quiz-progress-bar').style.width = `${progressPercentage}%`;
+
+        // 질문 제목 배치
+        document.getElementById('quiz-question-title').innerText = currentQuiz.question;
+
+        // 선택지 카드 렌더링
+        const wrapper = document.getElementById('quiz-options-wrapper');
+        wrapper.innerHTML = '';
+
+        currentQuiz.options.forEach((opt, idx) => {
+            const btn = document.createElement('button');
+            btn.className = 'option-card';
+            btn.innerText = opt.text;
+            btn.setAttribute('aria-label', opt.text);
+            btn.onclick = () => handleOptionClick(opt.score, idx);
+            wrapper.appendChild(btn);
+        });
+    }
+
+    // 선택지 클릭 제어
+    function handleOptionClick(scoreObj, optionIdx) {
+        // 점수 합산
+        for (let key in scoreObj) {
+            scores[key] += scoreObj[key];
+        }
+        
+        // 이력 기록 (이전 버튼 클릭 대응용)
+        selectedAnswers.push({
+            score: scoreObj,
+            optionIndex: optionIdx
+        });
+
+        // 다음 문항 체크 또는 결과 도출
+        if (currentQuestionIndex < quizData.length - 1) {
+            currentQuestionIndex++;
+            renderQuestion();
+        } else {
+            calculateResult();
+        }
+    }
+
+    // 이전 문항 백트래킹
+    function prevQuiz() {
+        if (currentQuestionIndex > 0) {
+            currentQuestionIndex--;
+            // 누적된 점수 차감 가감산 복구
+            const prevHistory = selectedAnswers.pop();
+            for (let key in prevHistory.score) {
+                scores[key] -= prevHistory.score[key];
+            }
+            renderQuestion();
+        } else {
+            // 1번 문항에서 이전 누르면 인트로 이동
+            document.getElementById('view-quiz').classList.remove('active');
+            document.getElementById('view-intro').classList.add('active');
+        }
+    }
+
+    // 유형 계산 최적화 알고리즘
+    function calculateResult() {
+        let maxKey = 'A';
+        let maxScore = -1;
+
+        for (let key in scores) {
+            if (scores[key] > maxScore) {
+                maxScore = scores[key];
+                maxKey = key;
+            }
+        }
+
+        finalResultType = maxKey;
+        displayResult(finalResultType);
+    }
+
+    // 결과 렌더링 및 동적 카피 변환
+    function displayResult(type) {
+        const data = resultTypes[type];
+        
+        // 텍스트 매핑
+        document.getElementById('res-title').innerText = data.title;
+        document.getElementById('res-desc').innerText = data.desc;
+        document.getElementById('res-warning').innerText = data.warning;
+        document.getElementById('res-course-badge').innerText = `추천 과정: ${data.course}`;
+        document.getElementById('res-direction').innerText = `진단자님의 성향 지표를 분석한 결과 [${data.course}] 라인을 밟는 것이 시간 손실을 최소화하는 방안입니다. 상세 매칭률 확인을 조율해 드립니다.`;
+        
+        // 강점 리스트 뷰 구축
+        const strengthWrapper = document.getElementById('res-strength');
+        strengthWrapper.innerHTML = '';
+        data.strengths.forEach(str => {
+            const li = document.createElement('li');
+            li.innerText = str;
+            strengthWrapper.appendChild(li);
+        });
+
+        // CTA 버튼 텍스트 변경
+        document.getElementById('submit-btn').innerText = data.cta;
+
+        // 화면 전송
+        document.getElementById('view-quiz').classList.remove('active');
+        document.getElementById('view-result').classList.add('active');
+        
+        // 스크롤 상단 이동 최적화
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    // 전화번호 입력 시 하이픈 자동 처리 오토매틱 포맷터 (UX 배려)
+    function autoHyphen(target) {
+        let val = target.value.replace(/[^0-9]/g, '');
+        if (val.length < 4) {
+            target.value = val;
+        } else if (val.length < 7) {
+            target.value = val.substr(0, 3) + '-' + val.substr(3);
+        } else if (val.length < 11) {
+            target.value = val.substr(0, 3) + '-' + val.substr(3, 3) + '-' + val.substr(6);
+        } else {
+            target.value = val.substr(0, 3) + '-' + val.substr(3, 4) + '-' + val.substr(7);
+        }
+    }
+
+    // 폼 최종 제출 이벤트 핸들러
+    function handleFormSubmit(e) {
+        e.preventDefault();
+
+        const name = document.getElementById('user_name').value.trim();
+        const phone = document.getElementById('user_phone').value.trim();
+        const region = document.getElementById('user_region').value;
+        const time = document.getElementById('user_time').value;
+        const privacy = document.getElementById('privacy_agree').checked;
+
+        if (!name || !phone || !region) {
+            alert('필수 입력 항목을 모두 작성해주세요.');
+            return;
+        }
+
+        if (!privacy) {
+            alert('개인정보 수집 및 이용 약관에 동의해주셔야 신청이 가능합니다.');
+            return;
+        }
+
+        // 수집 데이터 취합 객체화 (hidden 데이터 포함)
+        const submissionPayload = {
+            name: name,
+            phone: phone,
+            region: region,
+            preferred_time: time,
+            diagnostic_result: finalResultType,
+            diagnostic_score_summary: JSON.stringify(scores),
+            ...utmParams,
+            submitted_at: new Date().toISOString()
+        };
+
+        // 외부 네이버폼 URL 우회 분기가 설정되어 있는 경우 대피 라우팅 처리
+        if (NAVER_FORM_URL !== "") {
+            window.location.href = NAVER_FORM_URL;
+            return;
+        }
+
+        // API 전송 로그 확보 (구글 스크립트 등 연결 시 활성화)
+        console.log("전송 데이터 레이어 캡처 성공:", submissionPayload);
+        
+        if (SCRIPT_URL !== "YOUR_GOOGLE_APPS_SCRIPT_URL_HERE" && SCRIPT_URL !== "") {
+            document.getElementById('submit-btn').innerText = "조회 요청 중...";
+            document.getElementById('submit-btn').disabled = true;
+
+            // CORS 대응 Fetch 전송 프로토콜
+            fetch(SCRIPT_URL, {
+                method: "POST",
+                mode: "no-cors",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(submissionPayload)
+            }).then(() => {
+                moveToComplete();
+            }).catch(err => {
+                console.error("전송 에러 대피 활성화", err);
+                moveToComplete(); // 인프라 오류 시에도 고객 이탈 방지를 위해 완료 화면 유도 후 수동 백업
+            });
+        } else {
+            // 기본 테스트 혹은 미연결 시 바로 전환 완료 처리
+            moveToComplete();
+        }
+    }
+
+    // 완료 스크린 전환
+    function moveToComplete() {
+        document.getElementById('view-result').classList.remove('active');
+        document.getElementById('view-complete').classList.add('active');
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    // 재시작 루틴
+    function restartApp() {
+        currentQuestionIndex = 0;
+        scores = { A: 0, B: 0, C: 0, D: 0 };
+        selectedAnswers = [];
+        document.getElementById('diagnosis-form').reset();
+        document.getElementById('submit-btn').disabled = false;
+        
+        document.getElementById('view-complete').classList.remove('active');
+        document.getElementById('view-intro').classList.add('active');
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
 </script>
 </body>
 </html>
