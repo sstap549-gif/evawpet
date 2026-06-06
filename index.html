@@ -1096,9 +1096,9 @@ body{
   1. 구글 드라이브 → "새로 만들기" → "Google 스프레드시트"
   2. 이름을 "이바우펫 상담 신청DB" 로 바꿔두세요.
   3. 1행에 헤더를 입력합니다:
-     A1=이름  B1=연락처  C1=지역  D1=상황  E1=목적
-     F1=결과유형  G1=응답내용  H1=UTM소스  I1=UTM매체
-     J1=UTM캠페인  K1=페이지URL  L1=제출시각
+     A1=등록일시  B1=이름  C1=연락처  D1=지역  E1=현재상황
+     F1=관심목적  G1=결과유형  H1=utm_source  I1=utm_medium
+     J1=utm_campaign  K1=page_url
 
   [ 2단계 ] Google Apps Script 만들기
   ─────────────────────────────────
@@ -1107,27 +1107,25 @@ body{
   ─────────────────────────────────
 
   function doPost(e) {
-  var sheet = SpreadsheetApp.getActiveSpreadsheet().getActiveSheet();
-  var data = JSON.parse(e.postData.contents);
-
-  sheet.appendRow([
-    data.name || "",
-    data.phone || "",
-    data.region || "",
-    data.status || "",
-    data.purpose || "",
-    data.resultType || "",
-    data.utm_source || "",
-    data.utm_medium || "",
-    data.utm_campaign || "",
-    data.page_url || "",
-    data.created_at || new Date()
-  ]);
-
-  return ContentService
-    .createTextOutput(JSON.stringify({ result: "ok" }))
-    .setMimeType(ContentService.MimeType.JSON);
-}
+    var sheet = SpreadsheetApp.getActiveSpreadsheet().getActiveSheet();
+    var data  = JSON.parse(e.postData.contents);
+    sheet.appendRow([
+      data.created_at || new Date(),
+      data.name || "",
+      data.phone || "",
+      data.region || "",
+      data.status || "",
+      data.purpose || "",
+      data.resultType || "",
+      data.utm_source || "",
+      data.utm_medium || "",
+      data.utm_campaign || "",
+      data.page_url || ""
+    ]);
+    return ContentService
+      .createTextOutput(JSON.stringify({result:"ok"}))
+      .setMimeType(ContentService.MimeType.JSON);
+  }
 
   ─────────────────────────────────
   3. 상단 "저장(💾)" 버튼 클릭 → 프로젝트 이름: "이바우펫DB연동"
@@ -1155,7 +1153,7 @@ body{
 
 <script>
 /* ── CONFIG ─────────────────────── */
-const SCRIPT_URL = ''; // Google Apps Script 웹앱 URL 입력 시 DB 자동 저장
+const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxdAzpcTrnib7K5Isu7HAkbeBn-_naOWlkVp1cb_-VpUQOz4SItEVhX_Eh8ZWTVUEk/exec'; // Google Apps Script 웹앱 URL 입력 시 DB 자동 저장
 const NAVER_FORM_URL = 'https://naver.me/xuFWuSPX';
 const NAVER_TALK_URL = 'https://talk.naver.com/WF9NNIU';
 const PHONE_NUMBER = '01083871793';
