@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="ko">
 <head>
@@ -1610,6 +1609,30 @@ function safeLocalStore(key, value){
   catch(e){ console.warn('localStorage 저장 생략:', e); }
 }
 
+
+function inferStatusFromQuiz(){
+  // Q5: "지금 나의 상황과 가장 가까운 것은?" 응답을 현재상황으로 자동 저장
+  return (st || answers[4] || '').trim();
+}
+
+function inferPurposeFromQuiz(){
+  // 사용자가 폼에서 관심목적 칩을 선택하면 그 값을 우선 사용
+  if(pt && pt.trim()) return pt.trim();
+
+  // Q3: "배우고 나서 가장 도달하고 싶은 결과는?" 응답 기반 자동 분류
+  const goalAnswer = (answers[2] || '').trim();
+  if(goalAnswer.includes('취업')) return '취업';
+  if(goalAnswer.includes('창업') || goalAnswer.includes('샵')) return '창업';
+  if(goalAnswer.includes('자격증')) return '자격증';
+  if(goalAnswer.includes('강아지') || goalAnswer.includes('케어') || goalAnswer.includes('반려견')) return '취미/반려견 케어';
+
+  // 결과유형 기반 보조 분류
+  if(rKey === 'A') return '취업';
+  if(rKey === 'B') return '창업';
+  if(rKey === 'D') return '취미/반려견 케어';
+  return '아직 고민 중';
+}
+
 function postWithTimeout(url, payload, timeoutMs){
   /* Apps Script는 CORS 응답을 주지 않으므로 no-cors로 전송합니다.
      application/json 헤더는 브라우저에서 preflight/CORS 문제를 만들 수 있어
@@ -1671,12 +1694,19 @@ async function doSubmit(event){
   btn.disabled = true;
   btn.classList.add('loading');
 
+  const resolvedStatus = inferStatusFromQuiz();
+  const resolvedPurpose = inferPurposeFromQuiz();
+
   const payload = {
     name,
     phone,
     region,
-    status: st || '',
-    purpose: pt || '',
+    status: resolvedStatus,
+    currentStatus: resolvedStatus,
+    situation: resolvedStatus,
+    purpose: resolvedPurpose,
+    interest: resolvedPurpose,
+    goal: resolvedPurpose,
     resultType: rKey || '',
     answers: answers.join(' | '),
     ...UTM,
