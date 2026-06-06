@@ -1,881 +1,1708 @@
+
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>애견미용 적합도 진단 - 이바우펫 애견미용학원</title>
-    <link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css" />
-    <style>
-        :root {
-            --orange: #FF6A00;
-            --orange-dark: #E85C00;
-            --orange-soft: #FFF3E8;
-            --cream: #FFFCF7;
-            --cream-2: #FFF7EF;
-            --black: #111827;
-            --gray: #6B7280;
-            --gray-light: #F3F4F6;
-            --line: #E5E7EB;
-            --green: #16A34A;
-            --navy: #172033;
-            --white: #FFFFFF;
-        }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no,viewport-fit=cover">
+<title>애견미용 적합도 진단 | 이바우펫</title>
+<link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css"/>
+<style>
+/* ═══════════════════════════════
+   DESIGN TOKENS
+═══════════════════════════════ */
+:root{
+  --or:#FF6A00;
+  --or-d:#E05400;
+  --or-p:#FFF3E8;
+  --or-pp:#FFF9F4;
+  --ink:#111827;
+  --ink2:#1F2937;
+  --gray:#6B7280;
+  --g2:#9CA3AF;
+  --g3:#E5E7EB;
+  --g4:#F3F4F6;
+  --cream:#FFFCF7;
+  --cream2:#FFF7EF;
+  --naver:#03C75A;
+  --naver-d:#02A84A;
+  --navy:#172033;
+  --white:#fff;
+  --line:#E5E7EB;
+  --r:12px;
+  --rsm:8px;
+  --PX:22px;
+  --sh:0 1px 4px rgba(0,0,0,.06),0 4px 16px rgba(0,0,0,.05);
+  --sh2:0 4px 20px rgba(0,0,0,.10);
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html{-webkit-text-size-adjust:100%;}
+body{
+  font-family:"Pretendard",-apple-system,BlinkMacSystemFont,system-ui,sans-serif;
+  font-size:16px;
+  line-height:1.6;
+  background:#EDEEF0;
+  color:var(--ink);
+  min-height:100vh;
+  display:flex;
+  justify-content:center;
+  -webkit-font-smoothing:antialiased;
+}
 
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-            font-family: "Pretendard", -apple-system, BlinkMacSystemFont, system-ui, Roboto, sans-serif;
-            -webkit-font-smoothing: antialiased;
-        }
+/* ─ APP SHELL ─ */
+.app{
+  width:100%;max-width:480px;
+  min-height:100vh;
+  background:var(--cream);
+  display:flex;flex-direction:column;
+  box-shadow:0 0 40px rgba(0,0,0,.12);
+  position:relative;
+}
+@media(min-width:520px){
+  body{padding:40px 0 60px;align-items:flex-start;}
+  .app{min-height:auto;}
+}
 
-        body {
-            background-color: #F8F9FA;
-            color: var(--black);
-            display: flex;
-            justify-content: center;
-            align-items: flex-start;
-            min-height: 100vh;
-        }
+/* ─ TOP BAR ─ */
+.topbar{
+  position:sticky;top:0;z-index:200;
+  background:rgba(255,252,247,.96);
+  backdrop-filter:blur(14px);
+  -webkit-backdrop-filter:blur(14px);
+  border-bottom:1px solid var(--g3);
+}
+.topbar-inner{
+  display:flex;align-items:center;
+  justify-content:space-between;
+  padding:13px var(--PX) 11px;
+}
+.brand{
+  font-size:13px;font-weight:800;
+  color:var(--navy);letter-spacing:.6px;
+}
+.brand span{
+  color:var(--or);
+}
+.step-pill{
+  font-size:11px;font-weight:700;
+  color:var(--gray);
+  background:var(--g4);
+  padding:4px 10px;border-radius:20px;
+  letter-spacing:.04em;
+  display:none;
+}
+.step-pill.show{display:block;}
 
-        .app-container {
-            width: 100%;
-            max-width: 480px;
-            background-color: var(--cream);
-            min-height: 100vh;
-            box-shadow: 0 0 20px rgba(0, 0, 0, 0.05);
-            display: flex;
-            flex-direction: column;
-            position: relative;
-            padding-bottom: env(safe-area-inset-bottom);
-        }
+/* 진행 바 */
+.pbar-wrap{height:3px;background:var(--g3);}
+.pbar{
+  height:3px;
+  background:linear-gradient(90deg,var(--or-d),var(--or));
+  border-radius:0 2px 2px 0;
+  transition:width .35s ease;
+}
 
-        .brand-header {
-            padding: 20px 24px 10px 24px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            background-color: var(--cream);
-        }
+/* ─ SCREENS ─ */
+.screen{display:none;flex-direction:column;padding:24px var(--PX) 48px;flex:1;}
+.screen.active{display:flex;}
 
-        .brand-logo {
-            font-size: 15px;
-            font-weight: 800;
-            color: var(--navy);
-            letter-spacing: -0.5px;
-        }
+/* ════════════════════════════════════
+   INTRO  ─  심리: 고통 집어내기 → 공감 → 해결사
+════════════════════════════════════ */
+#s-intro{padding-top:28px;}
 
-        .view-section {
-            display: none;
-            flex-direction: column;
-            padding: 16px 24px 40px 24px;
-            animation: fadeIn 0.4s ease-in-out;
-        }
+/* 긴박감 뱃지 — 희소성 + 사회적 증명 */
+.intro-badge{
+  display:inline-flex;align-items:center;gap:7px;
+  background:var(--ink);color:var(--white);
+  font-size:11px;font-weight:700;letter-spacing:.12em;
+  padding:6px 13px;border-radius:20px;
+  margin-bottom:22px;width:fit-content;
+}
+.badge-dot{
+  width:6px;height:6px;border-radius:50%;
+  background:var(--or);
+  animation:blink 1.6s ease-in-out infinite;
+}
+@keyframes blink{0%,100%{opacity:1;}50%{opacity:.3;}}
 
-        .view-section.active {
-            display: flex;
-        }
+/* 메인 헤드 — Loss Aversion: "못 받으면 손해" 프레임 */
+.intro-h1{
+  font-size:clamp(24px,7vw,30px);
+  font-weight:800;line-height:1.25;
+  color:var(--ink);letter-spacing:-.6px;
+  margin-bottom:16px;
+}
+.intro-h1 em{
+  color:var(--or);font-style:normal;
+  position:relative;
+}
 
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(8px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
+/* 공감 카피 — 타겟 상황 직접 묘사 */
+.intro-sub{
+  font-size:14px;font-weight:400;
+  line-height:1.9;color:var(--gray);
+  margin-bottom:28px;
+  border-left:3px solid var(--or);
+  padding-left:14px;
+}
+.intro-sub strong{color:var(--ink);font-weight:700;}
 
-        .badge {
-            align-self: flex-start;
-            background-color: var(--orange-soft);
-            color: var(--orange-dark);
-            padding: 6px 12px;
-            border-radius: 100px;
-            font-size: 13px;
-            font-weight: 700;
-            margin-bottom: 16px;
-        }
+/* 사회적 증명 수치 */
+.proof-row{
+  display:flex;gap:0;
+  border:1.5px solid var(--g3);
+  border-radius:var(--r);
+  overflow:hidden;
+  margin-bottom:28px;
+}
+.proof-item{
+  flex:1;text-align:center;
+  padding:14px 8px;
+  border-right:1.5px solid var(--g3);
+}
+.proof-item:last-child{border-right:none;}
+.proof-num{
+  font-size:20px;font-weight:800;
+  color:var(--ink);letter-spacing:-.5px;
+  display:block;
+}
+.proof-label{
+  font-size:10px;color:var(--gray);
+  margin-top:2px;display:block;
+  line-height:1.3;font-weight:500;
+}
 
-        .main-title {
-            font-size: 26px;
-            font-weight: 800;
-            line-height: 1.35;
-            color: var(--black);
-            letter-spacing: -0.8px;
-            margin-bottom: 12px;
-        }
+/* USP 그리드 */
+.usp-grid{
+  display:grid;grid-template-columns:1fr 1fr;
+  gap:10px;margin-bottom:24px;
+}
+.usp-card{
+  background:var(--white);
+  border:1.5px solid var(--g3);
+  border-radius:var(--r);
+  padding:18px 15px 16px;
+  position:relative;overflow:hidden;
+  box-shadow:var(--sh);
+}
+.usp-card::before{
+  content:'';position:absolute;
+  top:0;left:0;right:0;height:2.5px;
+  background:linear-gradient(90deg,var(--or-d),var(--or));
+  transform:scaleX(0);transform-origin:left;
+  transition:transform .22s;
+}
+.usp-card:hover::before{transform:scaleX(1);}
+.usp-no{
+  font-size:10px;font-weight:700;
+  color:var(--or);letter-spacing:.1em;
+  display:block;margin-bottom:7px;
+}
+.usp-title{
+  font-size:13px;font-weight:700;
+  color:var(--ink);line-height:1.4;
+  margin-bottom:4px;
+}
+.usp-desc{
+  font-size:11px;color:var(--g2);
+  line-height:1.45;
+}
 
-        .sub-title {
-            font-size: 15px;
-            font-weight: 400;
-            line-height: 1.6;
-            color: var(--gray);
-            margin-bottom: 32px;
-        }
+/* 손실 회피 강화 문구 */
+.loss-box{
+  background:linear-gradient(135deg,var(--or-pp),var(--cream2));
+  border:1.5px solid rgba(255,106,0,.18);
+  border-radius:var(--r);
+  padding:16px 18px;
+  margin-bottom:24px;
+  display:flex;align-items:flex-start;gap:12px;
+}
+.loss-icon{
+  width:32px;height:32px;border-radius:8px;
+  background:var(--or);
+  display:flex;align-items:center;justify-content:center;
+  flex-shrink:0;
+}
+.loss-icon svg{width:16px;height:16px;fill:var(--white);}
+.loss-text{font-size:13px;line-height:1.75;color:var(--ink);}
+.loss-text strong{color:var(--or-d);}
 
-        .usp-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 12px;
-            margin-bottom: 36px;
-        }
+/* CTA */
+.btn-cta-main{
+  width:100%;height:58px;border:none;
+  background:linear-gradient(135deg,var(--or-d),var(--or));
+  color:var(--white);border-radius:var(--r);
+  font-family:inherit;font-size:16px;font-weight:800;
+  cursor:pointer;
+  display:flex;align-items:center;justify-content:space-between;
+  padding:0 22px;
+  box-shadow:0 8px 28px rgba(255,106,0,.40);
+  transition:transform .15s,box-shadow .15s;
+  letter-spacing:-.2px;
+}
+.btn-cta-main:hover{transform:translateY(-2px);box-shadow:0 12px 34px rgba(255,106,0,.48);}
+.btn-cta-main:active{transform:scale(.98);}
+.cta-arr{
+  width:34px;height:34px;border-radius:50%;
+  background:rgba(255,255,255,.2);
+  display:flex;align-items:center;justify-content:center;
+  font-size:18px;flex-shrink:0;
+}
+.trust-note{
+  text-align:center;font-size:12px;
+  color:var(--g2);margin-top:11px;
+  line-height:1.65;
+}
 
-        .usp-card {
-            background-color: var(--white);
-            border: 1px solid var(--line);
-            border-radius: 16px;
-            padding: 18px 16px;
-            display: flex;
-            flex-direction: column;
-        }
+/* ════════════════════════════════════
+   QUIZ  ─  심리: 고통 직접 묘사, 선택지로 자기 인식
+════════════════════════════════════ */
+#s-quiz{padding-top:22px;}
 
-        .usp-card-title {
-            font-size: 15px;
-            font-weight: 700;
-            color: var(--navy);
-            margin-bottom: 4px;
-        }
+.quiz-header{margin-bottom:24px;}
+.quiz-top-row{
+  display:flex;align-items:center;
+  justify-content:space-between;
+  margin-bottom:6px;
+}
+.quiz-step-label{
+  font-size:11px;font-weight:700;
+  color:var(--or);letter-spacing:.08em;
+}
+.quiz-dots{display:flex;gap:5px;align-items:center;}
+.qdot{
+  width:7px;height:7px;border-radius:50%;
+  background:var(--g3);
+  transition:all .25s;
+}
+.qdot.done{background:var(--or);}
+.qdot.cur{background:var(--or);width:20px;border-radius:4px;}
 
-        .usp-card-desc {
-            font-size: 12px;
-            color: var(--gray);
-            line-height: 1.4;
-        }
+/* 진행 중 심리적 당김: "거의 다 왔어요" 메시지 */
+.quiz-nudge{
+  font-size:11px;font-weight:600;
+  color:var(--or);
+  text-align:right;
+  margin-top:4px;
+  min-height:16px;
+  transition:opacity .3s;
+}
 
-        .bottom-action-block {
-            margin-top: auto;
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-        }
+/* 퀴즈 질문 — 가장 크게 */
+.quiz-q{
+  font-size:clamp(19px,5.5vw,23px);
+  font-weight:800;line-height:1.35;
+  color:var(--ink);letter-spacing:-.4px;
+  margin-bottom:22px;
+  white-space:pre-line;
+}
 
-        .trust-text {
-            font-size: 13px;
-            color: var(--gray);
-            text-align: center;
-            line-height: 1.4;
-        }
+/* 선택지 */
+.opts{display:flex;flex-direction:column;gap:11px;flex:1;}
+.opt{
+  background:var(--white);
+  border:2px solid var(--g3);
+  border-radius:var(--r);
+  padding:17px 20px;
+  display:flex;align-items:center;gap:14px;
+  cursor:pointer;
+  transition:all .18s cubic-bezier(.4,0,.2,1);
+  box-shadow:var(--sh);
+  text-align:left;
+  font-family:inherit;
+  min-height:58px;
+}
+.opt:hover{
+  border-color:var(--or);
+  background:var(--or-pp);
+  transform:translateX(4px);
+}
+.opt.selected{
+  border-color:var(--or);
+  background:linear-gradient(135deg,var(--or-d),var(--or));
+  box-shadow:0 6px 22px rgba(255,106,0,.32);
+}
+.opt-idx{
+  width:32px;height:32px;border-radius:50%;
+  background:var(--g4);
+  display:flex;align-items:center;justify-content:center;
+  font-size:12px;font-weight:800;color:var(--gray);
+  flex-shrink:0;transition:all .18s;
+}
+.opt:hover .opt-idx{background:var(--or);color:var(--white);}
+.opt.selected .opt-idx{background:rgba(255,255,255,.22);color:var(--white);}
+.opt-txt{
+  font-size:14px;font-weight:600;
+  color:var(--ink);line-height:1.45;
+  flex:1;transition:color .18s;
+}
+.opt:hover .opt-txt{color:var(--or-d);}
+.opt.selected .opt-txt{color:var(--white);font-weight:700;}
 
-        .btn-primary {
-            width: 100%;
-            height: 58px;
-            background-color: var(--orange);
-            color: var(--white);
-            border: none;
-            border-radius: 16px;
-            font-size: 16px;
-            font-weight: 700;
-            cursor: pointer;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            transition: background-color 0.2s, transform 0.1s;
-            text-decoration: none;
-            -webkit-tap-highlight-color: transparent;
-        }
+.quiz-hint{
+  text-align:center;font-size:12px;
+  color:var(--g2);margin-top:18px;
+}
 
-        .btn-primary:active {
-            background-color: var(--orange-dark);
-            transform: scale(0.99);
-        }
+.btn-prev{
+  margin-top:14px;
+  background:none;border:1.5px solid var(--g3);
+  border-radius:var(--rsm);padding:10px;
+  font-size:13px;font-weight:600;color:var(--gray);
+  cursor:pointer;font-family:inherit;
+  width:100%;transition:all .15s;
+}
+.btn-prev:hover{border-color:var(--or);color:var(--or);}
 
-        .quiz-progress-container {
-            width: 100%;
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
-            margin-bottom: 32px;
-        }
+/* ════════════════════════════════════
+   LOADING
+════════════════════════════════════ */
+#s-loading{
+  align-items:center;justify-content:center;
+  min-height:calc(100vh - 68px);
+}
+.loading-box{
+  text-align:center;
+  display:flex;flex-direction:column;align-items:center;
+  padding:60px var(--PX);
+}
+.loading-ring{
+  width:56px;height:56px;
+  border:3px solid var(--g3);
+  border-top-color:var(--or);
+  border-radius:50%;
+  animation:spin .8s linear infinite;
+  margin-bottom:22px;
+}
+@keyframes spin{to{transform:rotate(360deg);}}
+.loading-title{
+  font-size:16px;font-weight:700;
+  color:var(--ink);margin-bottom:6px;letter-spacing:-.3px;
+}
+.loading-sub{
+  font-size:13px;color:var(--gray);
+  line-height:1.85;
+}
 
-        .quiz-meta {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            font-size: 13px;
-            font-weight: 600;
-            color: var(--gray);
-        }
+/* ════════════════════════════════════
+   RESULT  ─  심리: 확증 편향 활용, 긍정 프레이밍
+════════════════════════════════════ */
+#s-result{padding:0;}
 
-        .btn-back {
-            background: none;
-            border: none;
-            color: var(--gray);
-            font-size: 13px;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            gap: 4px;
-        }
+/* 히어로 */
+.res-hero{
+  padding:40px var(--PX) 36px;
+  text-align:center;position:relative;overflow:hidden;
+}
+.res-hero.ta{background:linear-gradient(148deg,#0C1828,#183060);}
+.res-hero.tb{background:linear-gradient(148deg,#BF4000,#FF6A00);}
+.res-hero.tc{background:linear-gradient(148deg,#6A3000,#984A08);}
+.res-hero.td{background:linear-gradient(148deg,#232830,#404555);}
+.res-hero::before{
+  content:'';position:absolute;
+  top:-80px;right:-80px;
+  width:260px;height:260px;border-radius:50%;
+  background:rgba(255,255,255,.04);
+}
+.res-hero::after{
+  content:'';position:absolute;
+  bottom:-100px;left:-60px;
+  width:280px;height:280px;border-radius:50%;
+  background:rgba(255,255,255,.03);
+}
+.res-type-badge{
+  display:inline-block;
+  background:rgba(255,255,255,.14);
+  color:rgba(255,255,255,.85);
+  font-size:10px;font-weight:700;letter-spacing:.14em;
+  padding:5px 14px;border-radius:20px;
+  border:1px solid rgba(255,255,255,.18);
+  margin-bottom:16px;position:relative;z-index:1;
+}
+.res-hero-icon{
+  width:64px;height:64px;border-radius:50%;
+  background:rgba(255,255,255,.14);
+  display:flex;align-items:center;justify-content:center;
+  margin:0 auto 16px;
+  position:relative;z-index:1;
+  animation:popIn .55s cubic-bezier(.36,.07,.19,.97);
+}
+.res-hero-icon svg{width:30px;height:30px;}
+@keyframes popIn{0%{transform:scale(0);opacity:0;}65%{transform:scale(1.12);}100%{transform:scale(1);opacity:1;}}
+.res-type-label{
+  font-size:10px;font-weight:700;letter-spacing:.16em;
+  color:rgba(255,255,255,.55);margin-bottom:8px;
+  position:relative;z-index:1;
+}
+.res-title{
+  font-size:clamp(19px,5vw,24px);
+  font-weight:800;color:var(--white);
+  line-height:1.28;letter-spacing:-.4px;
+  margin-bottom:12px;white-space:pre-line;
+  position:relative;z-index:1;
+}
+.res-subtitle{
+  font-size:13px;color:rgba(255,255,255,.70);
+  line-height:1.85;white-space:pre-line;
+  position:relative;z-index:1;
+}
 
-        .progress-track {
-            width: 100%;
-            height: 6px;
-            background-color: var(--line);
-            border-radius: 100px;
-            overflow: hidden;
-        }
+.res-body{padding:22px var(--PX) 44px;}
 
-        .progress-bar {
-            height: 100%;
-            width: 0%;
-            background-color: var(--orange);
-            transition: width 0.3s ease;
-        }
+/* 섹션 레이블 — 일관성 */
+.sec-label{
+  display:flex;align-items:center;gap:8px;
+  font-size:10px;font-weight:700;
+  letter-spacing:.12em;color:var(--g2);
+  margin:0 0 13px;
+}
+.sec-label::after{content:'';flex:1;height:1px;background:var(--g3);}
 
-        .quiz-options-list {
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-            margin-bottom: 24px;
-        }
+/* 점수 카드 */
+.score-card{
+  background:var(--white);
+  border-radius:var(--r);
+  border:1.5px solid var(--g3);
+  overflow:hidden;
+  margin-bottom:18px;
+  box-shadow:var(--sh);
+}
+.sc-head{
+  padding:14px 19px;
+  border-bottom:1px solid var(--g4);
+  display:flex;align-items:center;justify-content:space-between;
+}
+.sc-head-title{font-size:13px;font-weight:700;color:var(--ink);}
+.sc-pill{
+  font-size:10px;font-weight:700;
+  padding:3px 10px;border-radius:20px;
+}
+.sc-pill.a{background:#EBF4FF;color:#1A5DA0;}
+.sc-pill.b{background:var(--or-p);color:var(--or-d);}
+.sc-pill.c{background:#FEF3C7;color:#8C3D0A;}
+.sc-pill.d{background:var(--g4);color:var(--gray);}
+.sc-body{padding:19px;}
+.sc-num-row{display:flex;align-items:baseline;gap:4px;margin-bottom:11px;}
+.sc-big{font-size:50px;font-weight:800;color:var(--ink);line-height:1;letter-spacing:-2px;}
+.sc-unit{font-size:15px;color:var(--gray);}
+.sc-total{font-size:13px;color:var(--g2);}
+.sc-bar{height:8px;background:var(--g4);border-radius:8px;overflow:hidden;margin-bottom:18px;}
+.sc-fill{height:8px;border-radius:8px;width:0%;transition:width 1.2s cubic-bezier(.4,0,.2,1);}
+.sc-fill.a{background:linear-gradient(90deg,#2563EB,#60A5FA);}
+.sc-fill.b{background:linear-gradient(90deg,var(--or-d),var(--or));}
+.sc-fill.c{background:linear-gradient(90deg,#8C3D0A,#D97706);}
+.sc-fill.d{background:linear-gradient(90deg,#6B7280,#9CA3AF);}
+.analysis-rows{display:flex;flex-direction:column;gap:9px;}
+.analysis-row{
+  display:flex;align-items:flex-start;gap:11px;
+  padding:11px 13px;border-radius:9px;background:var(--g4);
+}
+.a-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;margin-top:4px;}
+.a-dot.g{background:#2563EB;}.a-dot.o{background:var(--or);}
+.a-dot.am{background:#D97706;}.a-dot.n{background:var(--g2);}
+.a-label{font-size:10px;font-weight:700;color:var(--g2);margin-bottom:2px;letter-spacing:.04em;}
+.a-txt{font-size:13px;font-weight:700;color:var(--ink);line-height:1.5;}
 
-        .option-card {
-            background-color: var(--white);
-            border: 1px solid var(--line);
-            border-radius: 16px;
-            padding: 18px 20px;
-            font-size: 15px;
-            font-weight: 600;
-            color: var(--black);
-            text-align: left;
-            cursor: pointer;
-            transition: all 0.2s ease;
-            width: 100%;
-            -webkit-tap-highlight-color: transparent;
-        }
+/* 메시지 카드 */
+.msg-card{
+  border-radius:var(--r);padding:19px;
+  margin-bottom:18px;border-left:4px solid;
+}
+.msg-card.a{background:#EBF4FF;border-color:#2563EB;}
+.msg-card.b{background:var(--or-p);border-color:var(--or);}
+.msg-card.c{background:#FEF3C7;border-color:#D97706;}
+.msg-card.d{background:var(--g4);border-color:var(--g3);}
+.msg-head{font-size:13px;font-weight:800;margin-bottom:9px;}
+.msg-head.a{color:#1A5DA0;}.msg-head.b{color:var(--or-d);}
+.msg-head.c{color:#8C3D0A;}.msg-head.d{color:var(--gray);}
+.msg-body{font-size:13px;color:#374151;line-height:1.85;}
 
-        .option-card:active {
-            background-color: var(--orange-soft);
-            border-color: var(--orange);
-        }
+/* 강점 리스트 */
+.strength-list{
+  display:flex;flex-direction:column;gap:9px;
+  margin-bottom:18px;
+}
+.strength-item{
+  display:flex;align-items:flex-start;gap:11px;
+  background:var(--white);border-radius:10px;
+  padding:12px 15px;box-shadow:var(--sh);
+  border:1.5px solid var(--g3);
+}
+.strength-check{
+  width:20px;height:20px;border-radius:50%;
+  background:var(--or-p);
+  display:flex;align-items:center;justify-content:center;
+  flex-shrink:0;margin-top:1px;
+}
+.strength-check svg{width:10px;height:10px;stroke:var(--or-d);fill:none;stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round;}
+.strength-txt{font-size:13px;font-weight:600;color:var(--ink);line-height:1.5;}
 
-        .report-header {
-            background-color: var(--navy);
-            color: var(--white);
-            padding: 28px 24px;
-            border-radius: 20px;
-            margin-bottom: 24px;
-        }
+/* 혜택 카드 */
+.benefit-card{
+  background:linear-gradient(140deg,#FFF7EE,#EEF3FF);
+  border-radius:var(--r);padding:21px;
+  border:1.5px solid rgba(255,106,0,.16);
+  margin-bottom:18px;
+}
+.benefit-head{
+  font-size:10px;font-weight:700;
+  color:var(--or-d);letter-spacing:.12em;
+  margin-bottom:15px;
+  display:flex;align-items:center;gap:8px;
+}
+.bh-line{flex:1;height:1px;background:linear-gradient(90deg,rgba(255,106,0,.22),transparent);}
+.benefit-rows{display:flex;flex-direction:column;gap:9px;}
+.benefit-row{
+  display:flex;align-items:flex-start;gap:11px;
+  background:var(--white);border-radius:9px;
+  padding:12px 14px;box-shadow:var(--sh);
+}
+.b-check{
+  width:20px;height:20px;border-radius:50%;
+  background:var(--or-p);
+  display:flex;align-items:center;justify-content:center;
+  flex-shrink:0;margin-top:1px;
+}
+.b-check svg{width:10px;height:10px;stroke:var(--or-d);fill:none;stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round;}
+.b-main{font-size:13px;font-weight:700;color:var(--ink);margin-bottom:2px;}
+.b-sub{font-size:11px;color:var(--g2);line-height:1.45;}
 
-        .report-badge {
-            display: inline-block;
-            background-color: rgba(255, 255, 255, 0.15);
-            color: #FFB380;
-            padding: 4px 10px;
-            border-radius: 6px;
-            font-size: 12px;
-            font-weight: 700;
-            margin-bottom: 12px;
-        }
+.disclaimer{
+  font-size:11px;color:var(--g2);
+  line-height:1.85;margin-bottom:22px;padding:0 2px;
+  text-align:center;
+}
 
-        .report-type-title {
-            font-size: 22px;
-            font-weight: 800;
-            line-height: 1.4;
-        }
+/* 결과 CTA */
+.btn-result-cta{
+  width:100%;height:58px;border:none;
+  background:linear-gradient(135deg,var(--or-d),var(--or));
+  color:var(--white);border-radius:var(--r);
+  font-family:inherit;font-size:15px;font-weight:800;
+  cursor:pointer;
+  box-shadow:0 6px 24px rgba(255,106,0,.38);
+  transition:transform .15s,box-shadow .15s;
+  margin-bottom:10px;
+  letter-spacing:-.2px;
+}
+.btn-result-cta:hover{transform:translateY(-2px);box-shadow:0 10px 30px rgba(255,106,0,.46);}
+.btn-result-cta.dark{
+  background:linear-gradient(135deg,#1F2937,var(--ink));
+  box-shadow:0 6px 20px rgba(17,24,39,.22);
+}
+.btn-retry{
+  width:100%;background:none;border:1.5px solid var(--g3);
+  border-radius:var(--r);padding:14px;
+  font-size:13px;font-weight:600;color:var(--gray);
+  cursor:pointer;font-family:inherit;transition:all .15s;
+}
+.btn-retry:hover{border-color:var(--or);color:var(--or);}
 
-        .section-card {
-            background-color: var(--white);
-            border: 1px solid var(--line);
-            border-radius: 20px;
-            padding: 24px;
-            margin-bottom: 16px;
-        }
+/* ════════════════════════════════════
+   FORM  ─  심리: 미완성 효과 (이미 시작했으니 끝까지)
+════════════════════════════════════ */
+#s-form{padding-top:26px;}
 
-        .section-card-title {
-            font-size: 16px;
-            font-weight: 700;
-            color: var(--navy);
-            margin-bottom: 12px;
-            display: flex;
-            align-items: center;
-            gap: 6px;
-        }
+.form-chip{
+  display:inline-flex;align-items:center;gap:6px;
+  background:var(--or-p);
+  border:1px solid rgba(255,106,0,.18);
+  border-radius:20px;padding:5px 12px;
+  font-size:11px;font-weight:700;color:var(--or-d);
+  margin-bottom:16px;
+}
+.form-title{
+  font-size:22px;font-weight:800;
+  color:var(--ink);line-height:1.3;
+  margin-bottom:6px;letter-spacing:-.5px;
+}
+.form-sub{
+  font-size:13px;color:var(--gray);
+  line-height:1.85;margin-bottom:26px;
+}
 
-        .section-card-desc {
-            font-size: 14px;
-            color: var(--black);
-            line-height: 1.6;
-        }
+/* 입력 그룹 */
+.fg{margin-bottom:16px;}
+.flb{
+  font-size:12px;font-weight:700;color:var(--ink);
+  margin-bottom:7px;letter-spacing:.04em;
+  display:flex;align-items:center;gap:5px;
+}
+.req{color:var(--or);}
+.fi,.fsel{
+  width:100%;padding:14px 17px;
+  border:2px solid var(--g3);
+  border-radius:var(--rsm);
+  font-size:15px;font-family:inherit;
+  color:var(--ink);background:var(--white);
+  transition:border-color .18s,box-shadow .18s;
+  -webkit-appearance:none;appearance:none;
+  box-shadow:var(--sh);
+}
+.fi::placeholder{color:var(--g2);}
+.fi:focus,.fsel:focus{
+  outline:none;border-color:var(--or);
+  box-shadow:0 0 0 3px rgba(255,106,0,.10);
+}
+.fi.err{border-color:#EF4444;}
+.fi.ok{border-color:#10B981;}
+.err-msg{
+  font-size:11px;color:#EF4444;
+  margin-top:4px;display:none;
+  font-weight:600;
+}
+.err-msg.show{display:block;}
+.ok-msg{
+  font-size:11px;color:#10B981;
+  margin-top:4px;display:none;
+  font-weight:600;
+}
+.ok-msg.show{display:block;}
 
-        .bullet-list {
-            list-style: none;
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-        }
+.sel-wrap{position:relative;}
+.sel-wrap::after{
+  content:'▾';position:absolute;
+  right:15px;top:50%;transform:translateY(-50%);
+  color:var(--gray);pointer-events:none;font-size:13px;
+}
 
-        .bullet-list li {
-            font-size: 14px;
-            line-height: 1.5;
-            color: var(--black);
-            position: relative;
-            padding-left: 18px;
-        }
+/* 칩 선택 */
+.chips{display:flex;flex-wrap:wrap;gap:8px;}
+.chip{
+  padding:8px 14px;border-radius:20px;
+  border:2px solid var(--g3);background:var(--white);
+  font-size:12px;font-weight:700;color:var(--gray);
+  cursor:pointer;transition:all .15s;font-family:inherit;
+}
+.chip.on{
+  border-color:var(--or);
+  background:var(--or-p);color:var(--or-d);
+}
 
-        .bullet-list li::before {
-            content: "•";
-            color: var(--orange);
-            font-weight: bold;
-            position: absolute;
-            left: 4px;
-        }
+/* 개인정보 동의 */
+.agree-box{
+  display:flex;align-items:flex-start;gap:12px;
+  background:var(--g4);border-radius:var(--rsm);
+  padding:14px;margin-bottom:14px;
+  border:1.5px solid var(--g3);
+}
+.agree-box input[type=checkbox]{
+  width:18px;height:18px;flex-shrink:0;
+  accent-color:var(--or);cursor:pointer;margin-top:2px;
+}
+.agree-txt{font-size:11px;color:var(--gray);line-height:1.75;}
+.agree-txt strong{color:var(--ink);font-weight:700;}
 
-        .benefit-box {
-            background-color: var(--cream-2);
-            border: 1px dashed var(--orange);
-        }
+.form-trust{
+  font-size:11px;color:var(--g2);
+  text-align:center;line-height:1.65;margin-bottom:16px;
+}
 
-        .benefit-box li::before {
-            content: "✓";
-            color: var(--green);
-        }
+/* 제출 버튼 */
+.btn-submit{
+  width:100%;height:58px;border:none;
+  background:linear-gradient(135deg,var(--or-d),var(--or));
+  color:var(--white);border-radius:var(--r);
+  font-family:inherit;font-size:16px;font-weight:800;
+  cursor:pointer;
+  box-shadow:0 6px 24px rgba(255,106,0,.38);
+  transition:transform .15s,opacity .15s;
+  letter-spacing:-.2px;
+  display:flex;align-items:center;justify-content:center;gap:9px;
+}
+.btn-submit:hover:not(:disabled){transform:translateY(-2px);}
+.btn-submit:disabled{
+  background:var(--g3);cursor:not-allowed;
+  box-shadow:none;opacity:.7;
+}
+.btn-submit .tx{display:flex;align-items:center;gap:9px;}
+.btn-submit .ld{display:none;align-items:center;gap:9px;}
+.btn-submit.loading .tx{display:none;}
+.btn-submit.loading .ld{display:flex;}
+.spin{
+  width:18px;height:18px;
+  border:2.5px solid rgba(255,255,255,.35);
+  border-top-color:var(--white);
+  border-radius:50%;
+  animation:spin .7s linear infinite;
+}
 
-        .disclaimer-text {
-            font-size: 11px;
-            color: var(--gray);
-            line-height: 1.5;
-            margin-top: 8px;
-            margin-bottom: 24px;
-        }
+/* ════════════════════════════════════
+   COMPLETE  ─  3가지 CTA 선명하게
+════════════════════════════════════ */
+#s-complete{
+  align-items:center;justify-content:center;
+  min-height:calc(100vh - 68px);
+}
+.complete-box{
+  text-align:center;width:100%;
+  padding:48px var(--PX);
+}
+.c-icon{
+  width:72px;height:72px;border-radius:50%;
+  background:linear-gradient(135deg,var(--or-d),var(--or));
+  display:flex;align-items:center;justify-content:center;
+  margin:0 auto 20px;
+  box-shadow:0 8px 24px rgba(255,106,0,.30);
+  animation:popIn .55s cubic-bezier(.36,.07,.19,.97);
+}
+.c-icon svg{width:34px;height:34px;stroke:var(--white);fill:none;stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round;}
+.c-title{
+  font-size:24px;font-weight:800;
+  color:var(--ink);margin-bottom:11px;
+  line-height:1.3;letter-spacing:-.4px;
+}
+.c-sub{
+  font-size:13px;color:var(--gray);
+  line-height:1.9;margin-bottom:10px;
+}
+.c-alert{
+  display:inline-flex;align-items:center;gap:6px;
+  background:#FEF3C7;color:#8C3D0A;
+  border-radius:20px;padding:7px 16px;
+  font-size:12px;font-weight:700;
+  margin-bottom:26px;
+  border:1px solid rgba(217,119,6,.18);
+}
+.c-btns{display:flex;flex-direction:column;gap:11px;margin-bottom:20px;}
 
-        .form-group {
-            margin-bottom: 18px;
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
-        }
+/* 네이버 톡톡 — 가장 강조 */
+.btn-talk{
+  display:flex;align-items:center;justify-content:center;gap:11px;
+  background:#03C75A;color:var(--white);
+  border:none;border-radius:var(--r);height:58px;
+  font-family:inherit;font-size:15px;font-weight:800;
+  text-decoration:none;cursor:pointer;
+  box-shadow:0 4px 18px rgba(3,199,90,.35);
+  transition:transform .15s,box-shadow .15s;
+  letter-spacing:-.2px;
+}
+.btn-talk:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(3,199,90,.45);}
+.btn-talk svg{width:20px;height:20px;flex-shrink:0;}
 
-        .form-group label {
-            font-size: 14px;
-            font-weight: 700;
-            color: var(--black);
-        }
+/* 교육지원 버튼 */
+.btn-scholarship{
+  display:flex;align-items:center;justify-content:center;gap:11px;
+  background:var(--white);color:var(--ink);
+  border:2px solid var(--g3);border-radius:var(--r);height:54px;
+  font-family:inherit;font-size:14px;font-weight:700;
+  text-decoration:none;cursor:pointer;
+  box-shadow:var(--sh);
+  transition:transform .15s,border-color .15s;
+  letter-spacing:-.2px;
+}
+.btn-scholarship:hover{transform:translateY(-2px);border-color:var(--or);}
+.btn-scholarship svg{width:18px;height:18px;flex-shrink:0;}
 
-        .form-control {
-            width: 100%;
-            height: 52px;
-            border: 1px solid var(--line);
-            border-radius: 12px;
-            padding: 0 16px;
-            font-size: 15px;
-            color: var(--black);
-            background-color: var(--white);
-            outline: none;
-            transition: border-color 0.2s;
-        }
+/* 전화 상담 */
+.btn-call{
+  display:flex;align-items:center;justify-content:center;gap:11px;
+  background:var(--navy);color:var(--white);
+  border:none;border-radius:var(--r);height:54px;
+  font-family:inherit;font-size:14px;font-weight:700;
+  text-decoration:none;cursor:pointer;
+  transition:transform .15s;letter-spacing:-.2px;
+}
+.btn-call:hover{transform:translateY(-2px);}
+.btn-call svg{width:18px;height:18px;flex-shrink:0;}
 
-        .form-control:focus {
-            border-color: var(--orange);
-        }
+.c-note{font-size:11px;color:var(--g2);line-height:1.9;}
+.btn-restart{
+  margin-top:15px;background:none;border:none;
+  font-size:13px;color:var(--gray);
+  cursor:pointer;text-decoration:underline;
+  font-family:inherit;
+}
 
-        select.form-control {
-            appearance: none;
-            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%236B7280'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'/%3E%3C/svg%3E");
-            background-repeat: no-repeat;
-            background-position: right 16px center;
-            background-size: 16px;
-        }
-
-        .agree-container {
-            margin: 20px 0;
-            padding: 14px;
-            background-color: var(--gray-light);
-            border-radius: 12px;
-        }
-
-        .agree-label {
-            display: flex;
-            align-items: flex-start;
-            gap: 10px;
-            font-size: 13px;
-            color: var(--black);
-            line-height: 1.4;
-            cursor: pointer;
-        }
-
-        .agree-label input[type="checkbox"] {
-            margin-top: 2px;
-            width: 16px;
-            height: 16px;
-            accent-color: var(--orange);
-        }
-
-        .agree-detail {
-            margin-top: 8px;
-            font-size: 11px;
-            color: var(--gray);
-            line-height: 1.4;
-            padding-left: 26px;
-        }
-
-        .complete-box {
-            text-align: center;
-            padding: 40px 0;
-        }
-
-        .success-icon {
-            width: 64px;
-            height: 64px;
-            background-color: var(--orange-soft);
-            color: var(--orange);
-            border-radius: 100px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            font-size: 28px;
-            font-weight: bold;
-            margin: 0 auto 24px auto;
-        }
-
-        .btn-secondary {
-            width: 100%;
-            height: 54px;
-            background-color: var(--navy);
-            color: var(--white);
-            border: none;
-            border-radius: 16px;
-            font-size: 15px;
-            font-weight: 700;
-            cursor: pointer;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            text-decoration: none;
-            margin-top: 12px;
-        }
-    </style>
+@media(max-width:360px){
+  :root{--PX:16px;}
+  .usp-grid{grid-template-columns:1fr;}
+  .intro-h1{font-size:22px;}
+}
+</style>
 </head>
 <body>
+<div class="app">
 
-<div class="app-container">
-    <header class="brand-header">
-        <div class="brand-logo">EBAWPET</div>
-    </header>
+  <!-- 상단바 -->
+  <div class="topbar">
+    <div class="topbar-inner">
+      <div class="brand">EBAW<span>PET</span></div>
+      <div class="step-pill" id="SPILL"></div>
+    </div>
+    <div class="pbar-wrap"><div class="pbar" id="PB" style="width:0%"></div></div>
+  </div>
 
-    <section id="view-intro" class="view-section active">
-        <div class="badge">60초 무료 진단</div>
-        <h1 class="main-title">내가 애견미용을<br>배워도 괜찮을까?</h1>
-        <p class="sub-title">취업, 창업, 자격증, 비용 고민까지<br>현재 내 상황에 맞는 맞춤형 수강 방향을 시스템으로 명확히 진단해보세요.</p>
+  <!-- ═══ INTRO ═══ -->
+  <div class="screen active" id="s-intro">
 
-        <div class="usp-grid">
-            <div class="usp-card">
-                <span class="usp-card-title">100% 가정견 실습</span>
-                <span class="usp-card-desc">대체 불가능한 실제 강아지 중심 실습 환경</span>
-            </div>
-            <div class="usp-card">
-                <span class="usp-card-title">실무 중심 교육</span>
-                <span class="usp-card-desc">자격증 취득을 넘어선 확실한 취·창업 대비</span>
-            </div>
-            <div class="usp-card">
-                <span class="usp-card-title">교육지원 확인</span>
-                <span class="usp-card-desc">개인 상황별 수강 혜택 가능 여부 진단</span>
-            </div>
-            <div class="usp-card">
-                <span class="usp-card-title">전국 20개 직영</span>
-                <span class="usp-card-desc">거주지와 가까운 직영 지점 연계 연수</span>
-            </div>
-        </div>
+    <!-- 심리 1: 사회적 증명 뱃지 -->
+    <div class="intro-badge">
+      <div class="badge-dot"></div>
+      60초 무료 진단 · 수강 방향 확인
+    </div>
 
-        <div class="bottom-action-block">
-            <p class="trust-text">수강 목적 및 적합성 진단 단계로,<br>학원의 무리한 등록 권유가 없으니 안심하고 진행하세요.</p>
-            <button class="btn-primary" onclick="startQuiz()">무료 적합도 진단 시작하기</button>
-        </div>
-    </section>
+    <!-- 심리 2: 손실 회피 헤드라인 — "못 받으면 손해" 프레임 -->
+    <h1 class="intro-h1">
+      내가 애견미용을<br>
+      <em>배워도 괜찮을까?</em>
+    </h1>
 
-    <section id="view-quiz" class="view-section">
-        <div class="quiz-progress-container">
-            <div class="quiz-meta">
-                <button class="btn-back" onclick="prevQuiz()">← 이전으로</button>
-                <span id="quiz-current-index">1 / 7</span>
-            </div>
-            <div class="progress-track">
-                <div id="quiz-progress-bar" class="progress-bar"></div>
-            </div>
-        </div>
+    <!-- 심리 3: 타겟 공감 — 구체적 상황 묘사 -->
+    <p class="intro-sub">
+      <strong>강아지는 좋아하지만 직업으로도 가능할지</strong><br>
+      고민된다면, 취업·창업·비용 고민까지<br>
+      60초 진단으로 먼저 확인해보세요.
+    </p>
 
-        <h2 id="quiz-question-title" class="main-title" style="font-size: 22px; margin-bottom: 24px;">질문 불러오는 중...</h2>
-        
-        <div id="quiz-options-wrapper" class="quiz-options-list"></div>
-    </section>
+    <!-- 사회적 증명 수치 -->
+    <div class="proof-row">
+      <div class="proof-item">
+        <span class="proof-num">20개</span>
+        <span class="proof-label">전국<br>직영 지점</span>
+      </div>
+      <div class="proof-item">
+        <span class="proof-num">4관왕</span>
+        <span class="proof-label">브랜드<br>대상 수상</span>
+      </div>
+      <div class="proof-item">
+        <span class="proof-num">100%</span>
+        <span class="proof-label">가정견<br>실습 원칙</span>
+      </div>
+    </div>
 
-    <section id="view-result" class="view-section">
-        <div class="report-header" id="report-header-box">
-            <span class="report-badge">진단 종합 분석 리포트</span>
-            <h2 class="report-type-title" id="res-title">분석 중...</h2>
-        </div>
+    <!-- USP 그리드 -->
+    <div class="usp-grid">
+      <div class="usp-card">
+        <span class="usp-no">USP 01</span>
+        <div class="usp-title">100% 가정견 실습</div>
+        <div class="usp-desc">실제 강아지 중심 현장형 실무 교육</div>
+      </div>
+      <div class="usp-card">
+        <span class="usp-no">USP 02</span>
+        <div class="usp-title">전국 20개 직영</div>
+        <div class="usp-desc">거주지 근처 지점 즉시 연계 상담</div>
+      </div>
+      <div class="usp-card">
+        <span class="usp-no">USP 03</span>
+        <div class="usp-title">교육지원 확인</div>
+        <div class="usp-desc">개인 상황별 지원 가능 여부</div>
+      </div>
+      <div class="usp-card">
+        <span class="usp-no">USP 04</span>
+        <div class="usp-title">취업·창업 설계</div>
+        <div class="usp-desc">수료 후 목적별 커리어 방향 설계</div>
+      </div>
+    </div>
 
-        <div class="section-card">
-            <h3 class="section-card-title">🔍 결과 요약</h3>
-            <p class="section-card-desc" id="res-desc">내용을 불러오는 중입니다.</p>
-        </div>
+    <!-- 심리 4: 손실 회피 강화 박스 -->
+    <div class="loss-box">
+      <div class="loss-icon">
+        <svg viewBox="0 0 16 16"><path d="M8 1.5a6.5 6.5 0 100 13 6.5 6.5 0 000-13zM7.25 4.75h1.5v4h-1.5zm0 5.5h1.5v1.5h-1.5z"/></svg>
+      </div>
+      <div class="loss-text">
+        <strong>수강료 50% 교육지원</strong> 가능 여부는<br>
+        개인 상황에 따라 달라집니다. 먼저 확인해보세요.
+      </div>
+    </div>
 
-        <div class="section-card">
-            <h3 class="section-card-title">⭐ 나의 잠재적 강점</h3>
-            <ul class="bullet-list" id="res-strength"></ul>
-        </div>
+    <!-- 메인 CTA -->
+    <button type="button" class="btn-cta-main" onclick="startQuiz()">
+      <span>무료 적합도 진단 시작하기</span>
+      <span class="cta-arr">→</span>
+    </button>
+    <p class="trust-note">무리한 등록 권유 없이 가능 여부부터 안내드립니다</p>
+  </div>
 
-        <div class="section-card">
-            <h3 class="section-card-title">⚠️ 현실적인 주의점</h3>
-            <p class="section-card-desc" id="res-warning">내용을 불러오는 중입니다.</p>
-        </div>
+  <!-- ═══ QUIZ ═══ -->
+  <div class="screen" id="s-quiz">
+    <div class="quiz-header">
+      <div class="quiz-top-row">
+        <span class="quiz-step-label" id="QN">1 / 7</span>
+        <div class="quiz-dots" id="QD"></div>
+      </div>
+      <div class="quiz-nudge" id="QNU"></div>
+    </div>
+    <div class="quiz-q" id="QT"></div>
+    <div class="opts" id="QO"></div>
+    <p class="quiz-hint">항목을 선택하면 자동으로 다음으로 넘어갑니다</p>
+    <button class="btn-prev" id="BPREV" onclick="prevQ()">&#8592; 이전 문항으로</button>
+  </div>
 
-        <div class="section-card">
-            <h3 class="section-card-title">🎯 추천 드리는 커리큘럼</h3>
-            <div class="badge" style="margin-bottom: 8px; background-color: var(--gray-light); color: var(--navy);" id="res-course-badge">추천 과정</div>
-            <p class="section-card-desc" id="res-direction">내용을 불러오는 중입니다.</p>
-        </div>
+  <!-- ═══ LOADING ═══ -->
+  <div class="screen" id="s-loading">
+    <div class="loading-box">
+      <div class="loading-ring"></div>
+      <div class="loading-title">응답을 분석하고 있어요</div>
+      <div class="loading-sub">7개 응답 기반으로<br>맞춤 수강 방향을 정리하는 중입니다</div>
+    </div>
+  </div>
 
-        <div class="section-card benefit-box">
-            <h3 class="section-card-title" style="color: var(--orange-dark);">🎁 상담 시 함께 확인해 드리는 혜택</h3>
-            <ul class="bullet-list">
-                <li>수강료 최대 50% 교육지원 혜택 대상 여부</li>
-                <li>국민취업지원제도 활용 가능성 및 개인 맞춤 정산</li>
-                <li>선착순 100만원 상당 전문가용 미용 도구 세트 지원 가능 여부</li>
-                <li>거주지 근처 전국 20개 직영 지점 배정 및 연계 상담</li>
-                <li>목적별 정규 수강 기간 및 커리큘럼 세부 견적 비용</li>
-            </ul>
-        </div>
+  <!-- ═══ RESULT ═══ -->
+  <div class="screen" id="s-result">
+    <div class="res-hero" id="RH">
+      <div class="res-type-badge" id="RL"></div>
+      <div class="res-hero-icon" id="RI"></div>
+      <div class="res-type-label" id="RTP"></div>
+      <div class="res-title" id="RT"></div>
+      <div class="res-subtitle" id="RS"></div>
+    </div>
+    <div class="res-body" id="RB"></div>
+  </div>
 
-        <p class="disclaimer-text">
-            * 본 진단은 사용자의 자가 응답 데이터를 기반으로 산출된 기본 분석 리포트입니다.<br>
-            * 교육지원 가능 여부와 혜택 금액은 개인의 상황에 따라 상이할 수 있으며, 실제 취업 및 수익률을 사전 보장하지 않습니다.
-        </p>
+  <!-- ═══ FORM ═══ -->
+  <div class="screen" id="s-form">
+    <div class="form-chip" id="FC">진단 완료</div>
+    <div class="form-title">딱 30초만 더<br>작성하면 끝납니다</div>
+    <p class="form-sub">
+      교육지원 가능 여부와 가까운 지점까지<br>
+      개인 상황에 맞게 안내해드립니다.
+    </p>
 
-        <div class="section-card" id="lead-form-section" style="border: 2px solid var(--orange);">
-            <h3 class="section-card-title" style="font-size: 18px; margin-bottom: 4px;">상담 컨설팅 및 혜택 신청</h3>
-            <p class="sub-title" style="margin-bottom: 20px; font-size: 13px;">본 진단 결과를 토대로 세부 가능 여부를 유선 안내 드립니다.</p>
+    <!-- 이름 -->
+    <div class="fg">
+      <div class="flb">이름 <span class="req">*</span></div>
+      <input class="fi" type="text" id="FN" placeholder="홍길동"
+        oninput="validateName(this)">
+      <div class="err-msg" id="FN-err">2자 이상 한글 또는 영문으로 입력해주세요</div>
+      <div class="ok-msg" id="FN-ok">확인됐습니다</div>
+    </div>
 
-            <form id="diagnosis-form" onsubmit="handleFormSubmit(event)">
-                <div class="form-group">
-                    <label for="user_name">성함</label>
-                    <input type="text" id="user_name" class="form-control" placeholder="성함을 입력해주세요" required>
-                </div>
+    <!-- 연락처 -->
+    <div class="fg">
+      <div class="flb">연락처 <span class="req">*</span></div>
+      <input class="fi" type="tel" id="FP" placeholder="010-0000-0000"
+        maxlength="13" inputmode="numeric"
+        oninput="fmtPhone(this); validatePhone(this)">
+      <div class="err-msg" id="FP-err">올바른 휴대폰 번호를 입력해주세요 (예: 010-1234-5678)</div>
+      <div class="ok-msg" id="FP-ok">확인됐습니다</div>
+    </div>
 
-                <div class="form-group">
-                    <label for="user_phone">연락처</label>
-                    <input type="tel" id="user_phone" class="form-control" placeholder="010-0000-0000" maxlength="13" required oninput="autoHyphen(this)">
-                </div>
+    <!-- 희망 지역 -->
+    <div class="fg">
+      <div class="flb">희망 지역 <span class="req">*</span></div>
+      <div class="sel-wrap">
+        <select class="fsel" id="FR">
+          <option value="">지역을 선택해주세요</option>
+          <option>서울</option><option>경기</option><option>인천</option>
+          <option>충청</option><option>전라</option><option>경상</option>
+          <option>대구</option><option>부산</option><option>제주</option>
+          <option>잘 모르겠어요</option>
+        </select>
+      </div>
+    </div>
 
-                <div class="form-group">
-                    <label for="user_region">희망 지역 (전국 20개 직영)</label>
-                    <select id="user_region" class="form-control" required>
-                        <option value="">지역을 선택해주세요</option>
-                        <option value="서울">서울</option>
-                        <option value="경기">경기</option>
-                        <option value="인천">인천</option>
-                        <option value="충청">충청</option>
-                        <option value="전라">전라</option>
-                        <option value="경상">경상</option>
-                        <option value="대구">대구</option>
-                        <option value="부산">부산</option>
-                        <option value="잘모르겠음">잘 모르겠어요 (추천 요청)</option>
-                    </select>
-                </div>
+    <!-- 현재 상황 -->
+    <div class="fg">
+      <div class="flb">현재 상황</div>
+      <div class="chips" id="CS">
+        <div class="chip" onclick="pickChip(this,'s')">취업 준비 중</div>
+        <div class="chip" onclick="pickChip(this,'s')">직장인</div>
+        <div class="chip" onclick="pickChip(this,'s')">주부/경력단절</div>
+        <div class="chip" onclick="pickChip(this,'s')">학생</div>
+        <div class="chip" onclick="pickChip(this,'s')">창업 준비</div>
+        <div class="chip" onclick="pickChip(this,'s')">기타</div>
+      </div>
+    </div>
 
-                <div class="form-group">
-                    <label for="user_time">통화 편리한 시간</label>
-                    <select id="user_time" class="form-control">
-                        <option value="상관없음">언제나 상관없음</option>
-                        <option value="오전(09시~12시)">오전 (09시 ~ 12시)</option>
-                        <option value="오후(12시~18시)">오후 (12시 ~ 18시)</option>
-                        <option value="저녁(18시이후)">저녁 (18시 이후)</option>
-                    </select>
-                </div>
+    <!-- 관심 목적 -->
+    <div class="fg">
+      <div class="flb">관심 목적</div>
+      <div class="chips" id="CP">
+        <div class="chip" onclick="pickChip(this,'p')">취업</div>
+        <div class="chip" onclick="pickChip(this,'p')">창업</div>
+        <div class="chip" onclick="pickChip(this,'p')">자격증</div>
+        <div class="chip" onclick="pickChip(this,'p')">취미/반려견 케어</div>
+        <div class="chip" onclick="pickChip(this,'p')">아직 고민 중</div>
+      </div>
+    </div>
 
-                <div class="agree-container">
-                    <label class="agree-label">
-                        <input type="checkbox" id="privacy_agree" required>
-                        <span>개인정보 수집 및 이용 약관 동의 (필수)</span>
-                    </label>
-                    <div class="agree-detail">
-                        • 수집 항목: 이름, 연락처, 희망지역, 진단 결과 데이터<br>
-                        • 수집 목적: 교육지원 혜택 가능 여부 조회 및 상담 연락<br>
-                        • 보유 및 이용기간: 접수일로부터 365일 (이후 즉시 파기)
-                    </div>
-                </div>
+    <!-- 개인정보 동의 -->
+    <div class="agree-box">
+      <input type="checkbox" id="AG">
+      <div class="agree-txt">
+        <strong>[필수] 개인정보 수집 및 이용 동의</strong><br>
+        수집 항목: 이름, 연락처, 희망지역, 상담 목적<br>
+        수집 목적: 교육지원 가능 여부 확인 및 상담 안내<br>
+        보유 기간: 상담 완료 후 365일<br>
+        동의를 거부하실 수 있으나 상담 신청이 제한될 수 있습니다.
+      </div>
+    </div>
 
-                <button type="submit" class="btn-primary" id="submit-btn"></button>
-            </form>
-        </div>
-    </section>
+    <p class="form-trust">무리한 등록 권유 없이 가능 여부부터 안내드립니다</p>
 
-    <section id="view-complete" class="view-section">
-        <div class="complete-box">
-            <div class="success-icon">✓</div>
-            <h1 class="main-title" style="font-size: 24px;">진단 및 지원 신청이<br>정상 완료되었습니다.</h1>
-            <p class="sub-title" style="margin-bottom: 24px;">
-                조회 결과 안내를 위해 순차적으로 담당자가 연락을 드릴 예정이오니, <strong style="color: var(--orange-dark); font-weight: 700;">모르는 번호로 전화가 오더라도 꼭 받아주시기 바랍니다.</strong>
-            </p>
-            
-            <a href="#" id="talk-link" target="_blank" class="btn-primary" style="background-color: #03C75A;">네이버 톡톡 실시간 문의</a>
-            <button class="btn-secondary" onclick="restartApp()">테스트 처음부터 다시 하기</button>
-        </div>
-    </section>
-</div>
+    <button type="button" class="btn-submit" id="BS" onclick="doSubmit(event)">
+      <span class="tx">
+        <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 10l7-7 7 7M10 3v14"/></svg>
+        교육지원 가능 여부 확인하기
+      </span>
+      <span class="ld"><div class="spin"></div>제출 중...</span>
+    </button>
+  </div>
+
+  <!-- ═══ COMPLETE ═══ -->
+  <div class="screen" id="s-complete">
+    <div class="complete-box">
+      <div class="c-icon">
+        <svg viewBox="0 0 34 34"><polyline points="5 17 13 25 29 9"/></svg>
+      </div>
+      <div class="c-title">신청이<br>완료되었습니다</div>
+      <p class="c-sub">담당자가 확인 후 순차적으로 연락드립니다.<br>빠른 답변은 아래 채널을 이용해주세요.</p>
+      <div class="c-alert">전화가 오면 꼭 받아주세요</div>
+
+      <div class="c-btns">
+        <!-- 네이버 톡톡 — 네이버 초록 배경 -->
+        <a id="talkLink" class="btn-talk" href="https://talk.naver.com/WF9NNIU" target="_blank" rel="noopener">
+          <svg viewBox="0 0 20 20" fill="currentColor"><path d="M10 2C5.6 2 2 5.1 2 9c0 2.4 1.3 4.5 3.4 5.8L5 18l2.9-1.5c.6.2 1.4.3 2.1.3 4.4 0 8-3.1 8-7s-3.6-7-8-7z"/></svg>
+          [1:1문의] 궁금한 점 바로 물어보기
+        </a>
+
+        <!-- 교육지원 가능 여부 확인 — 네이버폼 -->
+        <a id="formLink" class="btn-scholarship" href="https://naver.me/xuFWuSPX" target="_blank" rel="noopener">
+          <svg viewBox="0 0 18 18" fill="none" stroke="#6B7280" stroke-width="1.5" stroke-linecap="round">
+            <rect x="2" y="2" width="14" height="14" rx="2.5"/>
+            <line x1="5" y1="6.5" x2="13" y2="6.5"/>
+            <line x1="5" y1="9.5" x2="13" y2="9.5"/>
+            <line x1="5" y1="12.5" x2="9.5" y2="12.5"/>
+          </svg>
+          교육지원 가능 여부 확인하기
+        </a>
+
+        <!-- 전화 상담 — 번호 노출 없이 -->
+        <a id="callLink" class="btn-call" href="tel:01083871793">
+          <svg viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round">
+            <path d="M3.5 4.5C3.5 4.5 4.5 3 6 3c.5 0 1 .5 1.5 1.5L8.5 6c.4.8 0 1.5-.5 2 .5 1 1 2.5 2 3.5.5.5 1 .5 2 .5.4-.4 1-1 2-1.5.8-.4 1.6-.4 2 0L17 12c.5 1.3-1 2-1 2C12 16 2 10 3.5 4.5z"/>
+          </svg>
+          전화 상담
+        </a>
+      </div>
+
+      <p class="c-note">상담 가능 시간: 평일 09:00 – 18:00<br>무리한 등록 권유 없이 안내드립니다</p>
+      <button class="btn-restart" onclick="restart()">처음부터 다시 진단하기</button>
+    </div>
+  </div>
+
+</div><!-- /.app -->
+
+<!-- ═════════════════════════════════════
+     GUIDE: Google Sheets 연동 방법
+     (이 주석 아래 SCRIPT_URL 변수에 URL 넣으면 됩니다)
+═════════════════════════════════════
+  
+  ★ 중학생도 따라할 수 있는 Google Sheets 연동 가이드 ★
+  
+  [ 1단계 ] Google Sheets 만들기
+  ─────────────────────────────
+  1. 구글 드라이브 → "새로 만들기" → "Google 스프레드시트"
+  2. 이름을 "이바우펫 상담 신청DB" 로 바꿔두세요.
+  3. 1행에 헤더를 입력합니다:
+     A1=이름  B1=연락처  C1=지역  D1=상황  E1=목적
+     F1=결과유형  G1=응답내용  H1=UTM소스  I1=UTM매체
+     J1=UTM캠페인  K1=페이지URL  L1=제출시각
+
+  [ 2단계 ] Google Apps Script 만들기
+  ─────────────────────────────────
+  1. 스프레드시트 상단 메뉴에서 "확장 프로그램" → "Apps Script" 클릭
+  2. 아래 코드를 전부 복사해서 붙여넣기 합니다:
+  ─────────────────────────────────
+
+  function doPost(e) {
+    var sheet = SpreadsheetApp.getActiveSpreadsheet().getActiveSheet();
+    var data  = JSON.parse(e.postData.contents);
+    sheet.appendRow([
+      data.name,
+      data.phone,
+      data.region,
+      data.status  || "",
+      data.purpose || "",
+      data.resultType,
+      data.answers      || "",
+      data.utm_source   || "",
+      data.utm_medium   || "",
+      data.utm_campaign || "",
+      data.page_url     || "",
+      data.created_at
+    ]);
+    return ContentService
+      .createTextOutput(JSON.stringify({result:"ok"}))
+      .setMimeType(ContentService.MimeType.JSON);
+  }
+
+  ─────────────────────────────────
+  3. 상단 "저장(💾)" 버튼 클릭 → 프로젝트 이름: "이바우펫DB연동"
+
+  [ 3단계 ] 배포하기
+  ─────────────────────────────────
+  1. 상단 "배포" 버튼 클릭 → "새 배포" 클릭
+  2. 유형 선택 → "웹 앱" 선택
+  3. 설명: "이바우펫 상담 수집" 입력
+  4. 다음 사용자로 실행: "나(내 계정)"
+  5. 액세스 권한: "모든 사용자" 선택
+  6. "배포" 클릭 → 구글 로그인/권한 허용
+  7. "웹 앱 URL" 복사 (https://script.google.com/macros/s/.../exec 형태)
+
+  [ 4단계 ] 아래 코드에 URL 붙여넣기
+  ─────────────────────────────────
+  아래 스크립트에서
+  const SCRIPT_URL = '여기에_URL_입력';
+  이 부분의 따옴표 안에 복사한 URL을 붙여넣으면 완성!
+
+  ⚠️ 주의: 코드 수정 후 "새 배포" 가 아닌 "배포 관리" →
+     기존 버전 수정(연필 아이콘) → "버전: 새 버전" → "배포" 해야 합니다.
+     
+════════════════════════════════════ -->
 
 <script>
-    // 상수 관리
-    const SCRIPT_URL = ""; 
-    const NAVER_FORM_URL = "";                             
-    const NAVER_TALK_URL = "https://talk.naver.com/";       
+/* ── CONFIG ─────────────────────── */
+const SCRIPT_URL = ''; // Google Apps Script 웹앱 URL 입력 시 DB 자동 저장
+const NAVER_FORM_URL = 'https://naver.me/xuFWuSPX';
+const NAVER_TALK_URL = 'https://talk.naver.com/WF9NNIU';
+const PHONE_NUMBER = '01083871793';
 
-    const quizData = [
-        {
-            question: "애견미용을 알아보시는 가장 큰 핵심적인 이유는 무엇인가요?",
-            options: [
-                { text: "안정적이고 전문적인 취업 기술이 필요해서", score: { A: 4, B: 1, C: 2, D: 0 } },
-                { text: "장기적으로 나만의 샵이나 창업을 계획하고 있어서", score: { A: 1, B: 5, C: 1, D: 0 } },
-                { text: "강아지를 너무 좋아해서 직업으로 연결하고 싶어서", score: { A: 2, B: 2, C: 4, D: 1 } },
-                { text: "새로운 도전이 필요하지만 아직 진로가 막연해서", score: { A: 1, B: 0, C: 2, D: 4 } }
-            ]
-        },
-        {
-            question: "시작하기 전 현재 가장 마음에 걸리거나 걱정되는 부분은?",
-            options: [
-                { text: "초기 수강료 부담 및 교육지원 혜택 가능 여부", score: { A: 2, B: 2, C: 2, D: 1 } },
-                { text: "손재주가 없거나 나이가 늦어서 잘 적응할 수 있을지", score: { A: 2, B: 1, C: 4, D: 2 } },
-                { text: "자격증을 취득한 뒤 실제로 취업이 연계될지 여부", score: { A: 5, B: 1, C: 2, D: 1 } },
-                { text: "신뢰할 수 있고 제대로 가르쳐주는 학원 선택 기준", score: { A: 2, B: 3, C: 3, D: 2 } }
-            ]
-        },
-        {
-            question: "교육을 이수한 이후, 가장 궁극적으로 도달하고 싶은 결과는?",
-            options: [
-                { text: "빠르고 탄탄한 취업 성공", score: { A: 5, B: 1, C: 1, D: 0 } },
-                { text: "내 명의의 애견미용 전문 샵 창업", score: { A: 1, B: 5, C: 1, D: 0 } },
-                { text: "공인 자격증 정식 취득 자체", score: { A: 3, B: 2, C: 3, D: 2 } },
-                { text: "반려견을 위한 전문적인 홈케어 및 셀프미용", score: { A: 0, B: 0, C: 1, D: 5 } }
-            ]
-        },
-        {
-            question: "교육기관을 선택할 때 절대 양보할 수 없는 기준 한 가지는?",
-            options: [
-                { text: "실제 살아있는 강아지로 진행하는 '가정견 실습 경험'", score: { A: 4, B: 4, C: 2, D: 1 } },
-                { text: "단기간 내 자격증 합격을 보장하는 높은 취득률", score: { A: 2, B: 1, C: 4, D: 2 } },
-                { text: "취업 연수 기회나 확실한 연계 컨설팅 인프라", score: { A: 5, B: 3, C: 2, D: 0 } },
-                { text: "정부 지원 혜택 및 수강료 감면 지원", score: { A: 2, B: 2, C: 3, D: 3 } }
-            ]
-        },
-        {
-            question: "진단자님의 현재 경제 및 사회적 경제 활동 상황은 어떠하신가요?",
-            options: [
-                { text: "새로운 돌파구를 찾는 구직자 / 취업준비생", score: { A: 4, B: 1, C: 3, D: 1 } },
-                { text: "이직 혹은 퇴사 후 제2의 기술을 갖고 싶은 직장인", score: { A: 3, B: 3, C: 3, D: 1 } },
-                { text: "재취업 및 안정적 창업을 희망하는 주부 / 경력단절", score: { A: 3, B: 4, C: 2, D: 2 } },
-                { text: "전문 업종의 미래 방향성을 넓히려는 예비 창업주", score: { A: 1, B: 5, C: 1, D: 0 } }
-            ]
-        },
-        {
-            question: "안내를 받으신다면 어떤 커리큘럼 방식이 더 마음에 이끌리시나요?",
-            options: [
-                { text: "필드에서 즉시 적응 가능한 실무 가정견 실습 위주", score: { A: 5, B: 3, C: 2, D: 1 } },
-                { text: "기초 가이드부터 차근차근 안정감 있게 밟아나가는 정석", score: { A: 2, B: 2, C: 4, D: 2 } },
-                { text: "시간 낭비 없이 스펙 자격증 취득에 속도를 내는 코스", score: { A: 2, B: 1, C: 3, D: 3 } },
-                { text: "오픈 준비 단계부터 브랜딩 컨설팅까지 지원하는 비즈니스형", score: { A: 1, B: 5, C: 1, D: 0 } }
-            ]
-        },
-        {
-            question: "이번 상담 및 진단을 통하여 가장 명쾌하게 알아내고 싶은 부분은?",
-            options: [
-                { text: "내가 받을 수 있는 개인 맞춤형 교육비 지원 혜택 확인", score: { A: 3, B: 2, C: 3, D: 3 } },
-                { text: "내 거주지에서 통원 가능한 가장 가까운 직영 지점 추천", score: { A: 2, B: 2, C: 3, D: 2 } },
-                { text: "수강 완료 후 실제 필드 진입 가능한 현실적 취업 전략", score: { A: 5, B: 1, C: 2, D: 0 } },
-                { text: "지속성 높은 매장 오픈 프로세스 및 마케팅 가이드", score: { A: 1, B: 5, C: 1, D: 0 } }
-            ]
-        }
-    ];
+document.addEventListener('DOMContentLoaded', () => {
+  const talk = document.getElementById('talkLink');
+  const form = document.getElementById('formLink');
+  const call = document.getElementById('callLink');
+  if(talk) talk.href = NAVER_TALK_URL;
+  if(form) form.href = NAVER_FORM_URL;
+  if(call) call.href = 'tel:' + PHONE_NUMBER.replace(/\D/g,'');
+});
 
-    const resultTypes = {
-        A: {
-            title: "실무 경험을 쌓으면 취업 방향이 매우 뚜렷한 [실무취업형]",
-            desc: "진단자님은 현업에서 통하는 진정한 기술 구축에 가장 큰 가치를 두고 계십니다. 실제 견종을 다루며 포트폴리오를 만들어 내는 실습형 과정이 동기부여와 현장 적응력을 드라마틱하게 끌어올릴 수 있는 최적의 상태입니다.",
-            strengths: ["취업에 필수적인 실전 지향적 몰입도가 탁월함", "모형 실습의 한계를 직시하고 있어 실질적 적응 속도가 빠름", "자격증 취득과 실전 역량을 동시에 결합 시 시너지 극대화 가능"],
-            warning: "간혹 실습 환경이 열악한 교육기관을 선택할 시 가짜 견종 실습으로 인해 졸업 후 필드에서 재교육을 받아야 하는 리스크가 발생할 수 있으니 주의가 필요합니다.",
-            course: "1년 취업 집중 프로페셔널 과정",
-            cta: "내 상황에 맞는 취업 과정 맞춤 안내받기"
-        },
-        B: {
-            title: "종합 비즈니스 설계가 가능한 확장형 마인드의 [창업준비형]",
-            desc: "단순히 어딘가에 소속되는 고용 상태를 넘어 장기적인 안목으로 자신만의 펫샵 브랜드 운영을 열망하고 있는 유형입니다. 트렌디한 견종 마스터링 기법, 고객 응대 프로세스 등의 비즈니스 트레이닝이 매칭됩니다.",
-            strengths: ["목표 의식이 뚜렷하여 고난도 기술 마스터 역량이 높음", "운영 및 경영 효율화 관점에서 트렌드를 해석하는 시각 보유", "스펙 한 줄보다 매장 효율과 포트폴리오의 실질 가치 중시"],
-            warning: "단기간의 기초 속성 자격증 코스만으로는 수많은 견종의 돌발 상황을 제어하기 어렵습니다. 100% 실견 중심의 실습 공간을 확보하셔야 합니다.",
-            course: "2년 창업·마스터 마케팅 융합 과정",
-            cta: "성공적인 샵 오너를 위한 창업 과정 상담받기"
-        },
-        C: {
-            title: "우선순위 로드맵 수립이 먼저인 [진로탐색형]",
-            desc: "애견미용 시장의 성장 가능성은 체감하고 계시나 구체적 노선이 확정되지 않은 탐색 상태입니다. 무리하게 긴 장기 과정 계약보다는 현실적 정보와 수강 진로 가이드를 먼저 받아 보시는 편이 안전합니다.",
-            strengths: ["충동적 결정이 아닌 논리적이고 차분한 탐색형 사고를 지님", "리스크를 사전에 인지하여 정교한 준비 단계 설계 가능", "개인 상황에 맞는 지원금 제도를 비교 분석하는 데 유연함"],
-            warning: "인터넷상의 광고 정보만으로는 실제 현업의 환경을 알기 어렵습니다. 전문가 인터뷰를 통해 현실 가이드를 대조해보세요.",
-            course: "맞춤형 진로 큐레이션 및 기초 탐색 과정",
-            cta: "나에게 최적화된 현실적인 수강 방향 컨설팅받기"
-        },
-        D: {
-            title: "전문 반려견 케어 및 점진적 확장에 유리한 [취미·케어형]",
-            desc: "현재 시점에서는 거창한 샵 오픈보다 본인의 아이를 직접 수준급으로 위생·미용 케어해주고 싶거나 라이트하게 입문하려는 상태입니다. 목적에 완벽하게 호환되는 가벼운 빌드업 루트를 추천합니다.",
-            strengths: ["반려동물에 대한 진정성 있는 애정과 정서적 공감대 최고 수준", "강제성이 아닌 순수한 흥미 유발로 습득 과정 자체를 즐김", "추후 심화 학습 전환 시 높은 디테일 표현력 기대 가능"],
-            warning: "취미 수준이라 할지라도 날카로운 가위를 다루므로 가짜 모형보다는 안전 통제 하의 실견 핸들링 기초를 배우는 것이 좋습니다.",
-            course: "반려견 맞춤형 펫케어 및 라이트 스킬 코스",
-            cta: "내 라이프스타일에 호환되는 과정 조회하기"
-        }
-    };
+/* UTM 수집 */
+const UP = new URLSearchParams(location.search);
+const UTM = {
+  utm_source:   UP.get('utm_source')   || '',
+  utm_medium:   UP.get('utm_medium')   || '',
+  utm_campaign: UP.get('utm_campaign') || '',
+  utm_content:  UP.get('utm_content')  || '',
+  utm_term:     UP.get('utm_term')     || '',
+  page_url:     location.href
+};
 
-    let currentQuestionIndex = 0;
-    let scores = { A: 0, B: 0, C: 0, D: 0 };
-    let selectedAnswers = []; 
-    let finalResultType = 'A';
-    let utmParams = {};
+/* ── QUIZ DATA ────────────────────
+   제미나이 버전 점수 로직 유지 + 질문 카피 업그레이드
+   심리: Foot-in-the-door — 쉬운 것 먼저
+──────────────────────────────────── */
+const QS = [
+  /* Q1 — 가장 쉬운 질문: 동기 */
+  {
+    t: "애견미용을 알아보게 된\n가장 큰 이유는?",
+    o: [
+      { txt: "취업 가능한 안정적 기술이 필요해서",      s:{A:4,B:1,C:2,D:0} },
+      { txt: "내 샵·창업을 장기적으로 계획하고 있어서", s:{A:1,B:5,C:1,D:0} },
+      { txt: "강아지를 너무 좋아해서 직업으로 연결하고 싶어서", s:{A:2,B:2,C:4,D:1} },
+      { txt: "진로가 막막해서 새로운 돌파구가 필요해서", s:{A:1,B:0,C:2,D:4} }
+    ]
+  },
+  /* Q2 — 걱정·불안 (공감 극대화) */
+  {
+    t: "지금 가장 마음에 걸리는\n고민이 뭔가요?",
+    o: [
+      { txt: "수강료 부담과 지원 혜택 받을 수 있는지",    s:{A:2,B:2,C:2,D:1} },
+      { txt: "손재주가 없거나 나이가 늦어서 잘 될지",    s:{A:2,B:1,C:4,D:2} },
+      { txt: "자격증 따도 실제 취업이 될지 불안하다",    s:{A:5,B:1,C:2,D:1} },
+      { txt: "믿을 수 있는 학원인지 판단하기가 어렵다",  s:{A:2,B:3,C:3,D:2} }
+    ]
+  },
+  /* Q3 — 목표 (꿈 시각화) */
+  {
+    t: "배우고 나서 가장 도달하고\n싶은 결과는?",
+    o: [
+      { txt: "빠르게 취업해서 안정적인 월급 받기",      s:{A:5,B:1,C:1,D:0} },
+      { txt: "내 명의의 애견미용 샵 창업하기",          s:{A:1,B:5,C:1,D:0} },
+      { txt: "공인 자격증을 정식으로 취득하기",         s:{A:3,B:2,C:3,D:2} },
+      { txt: "내 강아지를 직접 수준급으로 케어하기",    s:{A:0,B:0,C:1,D:5} }
+    ]
+  },
+  /* Q4 — 선택 기준 */
+  {
+    t: "학원을 고를 때 절대\n양보할 수 없는 기준은?",
+    o: [
+      { txt: "실제 살아있는 가정견으로 하는 실습 경험", s:{A:4,B:4,C:2,D:1} },
+      { txt: "자격증 준비 체계가 잘 잡힌 커리큘럼",    s:{A:2,B:1,C:4,D:2} },
+      { txt: "취업 연계와 실질적 커리어 인프라",        s:{A:5,B:3,C:2,D:0} },
+      { txt: "정부 지원·수강료 감면 혜택 규모",         s:{A:2,B:2,C:3,D:3} }
+    ]
+  },
+  /* Q5 — 현재 상황 */
+  {
+    t: "지금 나의 상황과\n가장 가까운 것은?",
+    o: [
+      { txt: "취업 돌파구를 찾는 구직자·취업준비생",    s:{A:4,B:1,C:3,D:1} },
+      { txt: "이직·퇴사 후 제2의 기술을 원하는 직장인", s:{A:3,B:3,C:3,D:1} },
+      { txt: "재취업·창업을 원하는 주부·경력단절",      s:{A:3,B:4,C:2,D:2} },
+      { txt: "전문 업종으로 확장하려는 예비 창업주",    s:{A:1,B:5,C:1,D:0} }
+    ]
+  },
+  /* Q6 — 선호 방식 */
+  {
+    t: "어떤 교육 방식이\n더 끌리시나요?",
+    o: [
+      { txt: "현장에서 바로 통하는 가정견 실습 중심",   s:{A:5,B:3,C:2,D:1} },
+      { txt: "기초부터 차근차근 안정감 있게 밟는 정석", s:{A:2,B:2,C:4,D:2} },
+      { txt: "시간 낭비 없이 자격증 취득에 속도 내는 코스", s:{A:2,B:1,C:3,D:3} },
+      { txt: "오픈부터 브랜딩까지 지원하는 비즈니스형", s:{A:1,B:5,C:1,D:0} }
+    ]
+  },
+  /* Q7 — 마지막: 가장 알고 싶은 것 (CTA 정렬) */
+  {
+    t: "이번 상담에서 가장\n먼저 확인하고 싶은 것은?",
+    o: [
+      { txt: "내가 받을 수 있는 교육지원 가능 여부",  s:{A:3,B:2,C:3,D:3} },
+      { txt: "내 거주지에서 가장 가까운 직영 지점 위치", s:{A:2,B:2,C:3,D:2} },
+      { txt: "수강 완료 후 현실적인 취업 준비 방향",     s:{A:5,B:1,C:2,D:0} },
+      { txt: "안정적인 매장 오픈 프로세스와 마케팅 가이드", s:{A:1,B:5,C:1,D:0} }
+    ]
+  }
+];
 
-    window.addEventListener('DOMContentLoaded', () => {
-        const urlParams = new URLSearchParams(window.location.search);
-        ['utm_source', 'utm_medium', 'utm_campaign'].forEach(key => {
-            if (urlParams.has(key)) utmParams[key] = urlParams.get(key);
-        });
-        document.getElementById('talk-link').href = NAVER_TALK_URL || "#";
-    });
+/* ── RESULT TYPES ─────────────────
+   카피라이팅: 과거형 결과, 구체적 변화, 한 명만 집어내기
+──────────────────────────────────── */
+const TYPES = {
+  A: {
+    heroClass: 'ta',
+    iconSvg: '<svg viewBox="0 0 30 30" fill="rgba(255,255,255,.9)"><path d="M15 2C8.9 2 4 6.9 4 13c0 3.8 1.9 7.2 4.8 9.3L8 27l2.7-1.4c1.3.5 2.8.7 4.3.7 6.1 0 11-4.9 11-11S21.1 2 15 2z"/><circle cx="10.5" cy="13" r="1.4" fill="#183060"/><circle cx="15" cy="13" r="1.4" fill="#183060"/><circle cx="19.5" cy="13" r="1.4" fill="#183060"/></svg>',
+    badge: '실무 취업형',
+    typeLabel: 'TYPE A',
+    title: '실습 경험이 쌓이면\n취업 방향이 뚜렷해지는 유형',
+    sub: '목표와 의지가 이미\n충분히 확인됩니다.',
+    scoreClass: 'a', pillClass: 'a', score: 90,
+    msgClass: 'a',
+    msgHead: '이바우펫이 이 유형에 자신 있는 이유',
+    /* 과거형 결과 카피 */
+    msgBody: '취업 목표가 선명하고, 자격증보다 실습 경험이 먼저라는 걸 이미 알고 있는 분입니다. 이 유형은 100% 가정견 실습으로 현장 적응력을 높이고, 포트폴리오까지 함께 준비하는 방향이 잘 맞습니다.',
+    strengths: [
+      '실전 지향적 몰입도가 높아 기술 흡수 속도가 빠름',
+      '실제 강아지 실습 경험을 쌓을수록 현장 적응력이 좋아짐',
+      '포트폴리오 완성 시 경쟁력이 즉시 가시화됨'
+    ],
+    analysis: [
+      {dot:'g', label:'목표 명확도', txt:'취업·창업 등 구체적 방향이 이미 잡혀 있어요'},
+      {dot:'g', label:'실전 이해도', txt:'자격증보다 실습 경험의 중요성을 알고 있어요'},
+      {dot:'g', label:'실행 의지', txt:'구체적 일정을 잡을 준비가 되어 있어요'}
+    ],
+    showBenefit: true, showAlt: false,
+    ctaTxt: '맞춤 취업 과정 상담 신청하기', ctaClass: '',
+    formCta: '맞춤 취업 과정 신청하기'
+  },
+  B: {
+    heroClass: 'tb',
+    iconSvg: '<svg viewBox="0 0 30 30" fill="rgba(255,255,255,.9)"><path d="M15 4l2.6 8H26l-6.6 4.8 2.5 7.7L15 20.3l-6.9 4.2 2.5-7.7L4 12h8.4z"/></svg>',
+    badge: '창업 준비형',
+    typeLabel: 'TYPE B',
+    title: '창업까지 고려할 수 있는\n확장형 유형',
+    sub: '장기 목표와 사업 감각이\n이미 갖춰져 있어요.',
+    scoreClass: 'b', pillClass: 'b', score: 75,
+    msgClass: 'b',
+    msgHead: '지금 이 단계에서 진짜 필요한 것',
+    msgBody: '자신만의 브랜드를 계획하고 있는 분입니다. 다양한 견종 실습 경험과 고객 응대 프로세스, 그리고 포트폴리오 완성이 창업 준비의 핵심입니다. 상담을 통해 현재 상황에 맞는 창업 준비 순서와 수강 방향을 확인하는 것이 좋습니다.',
+    strengths: [
+      '목표 의식이 뚜렷해 기술 마스터 속도가 높음',
+      '트렌드를 해석하고 브랜딩에 적용하는 안목 보유',
+      '포트폴리오의 비즈니스 가치를 이해하고 있음'
+    ],
+    analysis: [
+      {dot:'g', label:'사업 감각', txt:'장기적 목표와 브랜드 운영 방향이 있어요'},
+      {dot:'o', label:'실습 필요성', txt:'다양한 견종 실습으로 창업 준비를 완성해야 해요'},
+      {dot:'g', label:'실행 가능성', txt:'상담으로 세부 계획을 잡으면 충분히 가능해요'}
+    ],
+    showBenefit: true, showAlt: false,
+    ctaTxt: '창업 과정 전문 상담 신청하기', ctaClass: '',
+    formCta: '창업 과정 상세 신청하기'
+  },
+  C: {
+    heroClass: 'tc',
+    iconSvg: '<svg viewBox="0 0 30 30" fill="none" stroke="rgba(255,255,255,.9)" stroke-width="2"><circle cx="15" cy="15" r="10"/><path d="M15 10v6l3.5 2" stroke-linecap="round"/></svg>',
+    badge: '진로 탐색형',
+    typeLabel: 'TYPE C',
+    title: '방향 설정이 먼저\n필요한 유형',
+    sub: '지금 바로 등록보다\n현실 정보 먼저 확인하세요.',
+    scoreClass: 'c', pillClass: 'c', score: 55,
+    msgClass: 'c',
+    msgHead: '솔직하게 말씀드릴게요',
+    msgBody: '성장 가능성은 충분하지만, 아직 구체적 방향이 확정되지 않은 단계입니다. 바로 등록보다 수강 진로 가이드를 먼저 받아보시는 게 시행착오를 줄이는 가장 빠른 방법입니다.',
+    strengths: [
+      '논리적·차분한 탐색형 사고로 꼼꼼한 준비 가능',
+      '지원금 제도를 비교·분석하는 데 유연함',
+      '방향이 잡히면 집중도가 높아지는 스타일'
+    ],
+    analysis: [
+      {dot:'am', label:'방향성', txt:'아직 명확한 목표가 설정되지 않은 상태예요'},
+      {dot:'o', label:'관심도', txt:'애견미용에 대한 관심과 의지는 충분해요'},
+      {dot:'o', label:'가능성', txt:'방향이 잡히면 충분히 시작할 수 있어요'}
+    ],
+    showBenefit: false, showAlt: false,
+    ctaTxt: '현실적인 수강 방향 상담받기', ctaClass: 'dark',
+    formCta: '맞춤 수강 방향 상담 신청하기'
+  },
+  D: {
+    heroClass: 'td',
+    iconSvg: '<svg viewBox="0 0 30 30" fill="rgba(255,255,255,.9)"><path d="M15 5C9.5 5 5.5 9 5.5 13c0 5.5 9.5 13 9.5 13s9.5-7.5 9.5-13c0-4-4-8-9.5-8z"/></svg>',
+    badge: '취미·케어형',
+    typeLabel: 'TYPE D',
+    title: '직업보다 반려견 케어\n관심이 큰 유형',
+    sub: '목적에 맞는 방향으로\n안내해드릴게요.',
+    scoreClass: 'd', pillClass: 'd', score: 35,
+    msgClass: 'd',
+    msgHead: '솔직하게 말씀드릴게요',
+    msgBody: '현재는 취업·창업보다 반려견 케어나 취미 목적이 더 강한 상태입니다. 장기 전문 과정보다 목적에 맞는 방향을 먼저 상담으로 확인해보시는 게 더 현명한 선택입니다.',
+    strengths: [
+      '반려동물에 대한 진정성 있는 공감대가 우수함',
+      '흥미 기반이라 학습 과정 자체를 즐길 수 있음',
+      '심화 전환 시 섬세한 표현력이 강점이 됨'
+    ],
+    analysis: [
+      {dot:'n', label:'직업 목표', txt:'현재는 취업·창업 방향이 명확하지 않아요'},
+      {dot:'o', label:'애견 관심', txt:'강아지에 대한 진정한 관심과 열정이 있어요'},
+      {dot:'am', label:'향후 가능성', txt:'목적이 구체화되면 언제든 시작 가능해요'}
+    ],
+    showBenefit: false, showAlt: true,
+    ctaTxt: '내 목적에 맞는 방향 확인하기', ctaClass: 'dark',
+    formCta: '목적 맞춤 방향 상담 신청하기'
+  }
+};
 
-    function startQuiz() {
-        document.getElementById('view-intro').classList.remove('active');
-        document.getElementById('view-quiz').classList.add('active');
-        renderQuestion();
+/* ── STATE ───────────────────────── */
+let curQ = 0, answers = [], scores = {A:0,B:0,C:0,D:0}, rKey = 'A', st = '', pt = '', timer = null;
+
+/* ── NAVIGATION ─────────────────── */
+function setProgress(id){
+  const map = {intro:0, quiz:0, loading:65, result:72, form:88, complete:100};
+  let pct = map[id] || 0;
+  if(id === 'quiz') pct = 8 + (curQ / QS.length) * 55;
+  document.getElementById('PB').style.width = pct + '%';
+  const pill = document.getElementById('SPILL');
+  if(id === 'quiz'){
+    pill.textContent = (curQ+1) + ' / ' + QS.length;
+    pill.classList.add('show');
+  } else {
+    pill.classList.remove('show');
+  }
+}
+
+function go(id, cb){
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById('s-'+id).classList.add('active');
+  document.querySelector('.app').scrollTop = 0;
+  window.scrollTo({top:0, behavior:'smooth'});
+  setProgress(id);
+  if(cb) cb();
+}
+
+/* ── QUIZ ───────────────────────── */
+function startQuiz(){
+  curQ = 0; answers = []; scores = {A:0,B:0,C:0,D:0};
+  initDots();
+  go('quiz', renderQ);
+}
+
+function initDots(){
+  const d = document.getElementById('QD');
+  d.innerHTML = '';
+  QS.forEach(() => {
+    const e = document.createElement('div'); e.className = 'qdot'; d.appendChild(e);
+  });
+}
+
+function updateDots(){
+  document.querySelectorAll('.qdot').forEach((dot, i) => {
+    dot.className = 'qdot';
+    if(i < curQ) dot.classList.add('done');
+    else if(i === curQ) dot.classList.add('cur');
+  });
+}
+
+/* 심리: 진행 단계별 메시지 */
+const NUDGE_MSG = ['','','','','거의 절반 왔어요!','조금만 더요!','마지막 문항이에요!'];
+
+function renderQ(){
+  clearTimeout(timer);
+  const q = QS[curQ];
+  document.getElementById('QN').textContent = (curQ+1) + ' / ' + QS.length;
+  document.getElementById('QT').textContent = q.t;
+  setProgress('quiz');
+  updateDots();
+
+  /* 심리적 당김 메시지 */
+  const nu = document.getElementById('QNU');
+  nu.textContent = NUDGE_MSG[curQ] || '';
+  nu.style.opacity = NUDGE_MSG[curQ] ? '1' : '0';
+
+  const c = document.getElementById('QO');
+  c.innerHTML = '';
+  q.o.forEach((opt, i) => {
+    const el = document.createElement('button');
+    el.className = 'opt';
+    el.innerHTML = '<div class="opt-idx">' + String.fromCharCode(65+i) + '</div><span class="opt-txt">' + opt.txt + '</span>';
+    el.onclick = () => pickOpt(opt.s, opt.txt, el);
+    el.style.opacity = '0'; el.style.transform = 'translateX(10px)';
+    c.appendChild(el);
+    setTimeout(() => {
+      el.style.transition = 'opacity .28s, transform .28s';
+      el.style.opacity = '1'; el.style.transform = 'translateX(0)';
+    }, i * 55 + 10);
+  });
+}
+
+function pickOpt(scoreObj, txt, el){
+  clearTimeout(timer);
+  for(let k in scoreObj) scores[k] += scoreObj[k];
+  answers[curQ] = txt;
+  document.querySelectorAll('.opt').forEach(o => o.className = 'opt');
+  el.className = 'opt selected';
+  timer = setTimeout(() => {
+    if(curQ < QS.length - 1){ curQ++; go('quiz', renderQ); }
+    else { calcResult(); go('loading', null); setTimeout(() => go('result', renderResult), 1800); }
+  }, 260);
+}
+
+function prevQ(){
+  if(curQ > 0){
+    const prev = answers[curQ];
+    /* 이전 점수 되돌리기 — 어떤 옵션을 선택했는지 역추적 */
+    const prevOpt = QS[curQ-1].o.find(o => o.txt === answers[curQ-1]);
+    if(prevOpt){ for(let k in prevOpt.s) scores[k] -= prevOpt.s[k]; }
+    curQ--;
+    answers.pop();
+    go('quiz', renderQ);
+  } else {
+    go('intro', null);
+  }
+}
+
+/* ── CALC ────────────────────────── */
+function calcResult(){
+  let max = -1;
+  for(let k in scores){ if(scores[k] > max){ max = scores[k]; rKey = k; } }
+}
+
+/* ── RENDER RESULT ──────────────── */
+function renderResult(){
+  const r = TYPES[rKey];
+  document.getElementById('RH').className = 'res-hero ' + r.heroClass;
+  document.getElementById('RL').textContent = r.badge;
+  document.getElementById('RI').innerHTML = r.iconSvg;
+  document.getElementById('RTP').textContent = r.typeLabel;
+  document.getElementById('RT').textContent = r.title;
+  document.getElementById('RS').textContent = r.sub;
+  document.getElementById('FC').textContent = r.badge + ' 진단 완료';
+
+  const bd = document.getElementById('RB');
+  bd.innerHTML = '';
+  const add = el => bd.appendChild(el);
+  const make = (tag, cls, html) => { const e = document.createElement(tag); if(cls) e.className = cls; if(html) e.innerHTML = html; return e; };
+  const secLabel = txt => { const d = make('div','sec-label'); d.textContent = txt; add(d); };
+  const chkSvg = '<svg viewBox="0 0 10 10" fill="none" stroke="var(--or-d)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="1.5 5 4 7.5 8.5 2.5"/></svg>';
+
+  /* 점수 카드 */
+  secLabel('적합도 분석');
+  const sc = make('div','score-card');
+  sc.innerHTML = '<div class="sc-head"><div class="sc-head-title">진단 결과 분석</div><span class="sc-pill ' + r.pillClass + '">' + r.badge + '</span></div>'
+    + '<div class="sc-body"><div class="sc-num-row"><span class="sc-big" id="SN">0</span><span class="sc-unit">점</span><span class="sc-total">/ 100점</span></div>'
+    + '<div class="sc-bar"><div class="sc-fill ' + r.scoreClass + '" id="SF" style="width:0%"></div></div>'
+    + '<div class="analysis-rows">' + r.analysis.map(a => '<div class="analysis-row"><div class="a-dot '+a.dot+'"></div><div><div class="a-label">'+a.label+'</div><div class="a-txt">'+a.txt+'</div></div></div>').join('') + '</div>'
+    + '</div>';
+  add(sc);
+  setTimeout(() => {
+    const sf = document.getElementById('SF'); if(sf) sf.style.width = r.score + '%';
+    const sn = document.getElementById('SN'); if(sn){
+      let n=0; const t=r.score, step=Math.ceil(t/40);
+      const iv = setInterval(() => { n=Math.min(n+step,t); sn.textContent=n; if(n>=t) clearInterval(iv); }, 26);
     }
+  }, 350);
 
-    function renderQuestion() {
-        const currentQuiz = quizData[currentQuestionIndex];
-        document.getElementById('quiz-current-index').innerText = `${currentQuestionIndex + 1} / ${quizData.length}`;
-        document.getElementById('quiz-progress-bar').style.width = `${((currentQuestionIndex + 1) / quizData.length) * 100}%`;
-        document.getElementById('quiz-question-title').innerText = currentQuiz.question;
+  /* 메시지 */
+  secLabel('진단 메시지');
+  const mc = make('div','msg-card '+r.msgClass);
+  mc.innerHTML = '<div class="msg-head '+r.msgClass+'">' + r.msgHead + '</div><div class="msg-body">' + r.msgBody + '</div>';
+  add(mc);
 
-        const wrapper = document.getElementById('quiz-options-wrapper');
-        wrapper.innerHTML = '';
-        currentQuiz.options.forEach((opt, idx) => {
-            const btn = document.createElement('button');
-            btn.className = 'option-card';
-            btn.innerText = opt.text;
-            btn.onclick = () => handleOptionClick(opt.score, idx);
-            wrapper.appendChild(btn);
-        });
+  /* 강점 */
+  secLabel('나의 강점 분석');
+  const sl = make('div','strength-list');
+  sl.innerHTML = r.strengths.map(s => '<div class="strength-item"><div class="strength-check">'+chkSvg+'</div><div class="strength-txt">'+s+'</div></div>').join('');
+  add(sl);
+
+  /* 혜택 (A·B) */
+  if(r.showBenefit){
+    secLabel('상담 시 함께 확인해드리는 혜택');
+    const bc = make('div','benefit-card');
+    bc.innerHTML = '<div class="benefit-head">확인 가능 항목<div class="bh-line"></div></div>'
+      + '<div class="benefit-rows">' + [
+        ['수강료 50% 교육지원 가능 여부', '개인 상황에 따라 달라질 수 있어요'],
+        ['국민취업지원제도 활용 가능 여부', '추가 지원이 가능한 경우 함께 안내해드려요'],
+        ['선착순 전문가용 미용도구 세트 지원 여부', '100만원 상당 / 선착순 제공'],
+        ['취업·창업 목적별 커리큘럼 안내', '포트폴리오 제작까지 연결 가능'],
+        ['거주지 가장 가까운 직영 지점 배정', '전국 20개 직영 중 맞춤 매칭']
+      ].map(([m,s]) => '<div class="benefit-row"><div class="b-check">'+chkSvg+'</div><div><div class="b-main">'+m+'</div><div class="b-sub">'+s+'</div></div></div>').join('')
+      + '</div>';
+    add(bc);
+  }
+
+  if(r.showAlt){
+    secLabel('먼저 시도해볼 수 있는 방향');
+    const ac = make('div','benefit-card');
+    ac.innerHTML = '<div class="benefit-head">추천 다음 단계<div class="bh-line"></div></div>'
+      + '<div class="benefit-rows">' + [
+        ['봉사활동으로 반려동물 적성 확인하기', '실제 동물과의 감각을 먼저 경험해보세요'],
+        ['온라인 강의로 애견미용 기초 지식 쌓기', '저비용으로 관심사 확인 가능'],
+        ['기초 자격증 취득 후 본 과정 도전', '단계별 접근으로 리스크 최소화']
+      ].map(([m,s]) => '<div class="benefit-row"><div class="b-check">'+chkSvg+'</div><div><div class="b-main">'+m+'</div><div class="b-sub">'+s+'</div></div></div>').join('')
+      + '</div>';
+    add(ac);
+  }
+
+  /* 면책 */
+  const dc = make('p','disclaimer');
+  dc.textContent = '* 본 진단은 자가 응답 기반 기초 분석입니다. 교육지원 가능 여부와 혜택 금액은 개인 상황에 따라 달라질 수 있습니다. 취업·수익을 보장하지 않으며 상담을 통해 개인 상황에 맞는 방향을 안내드립니다.';
+  add(dc);
+
+  /* CTA */
+  const cta = make('button','btn-result-cta '+r.ctaClass);
+  cta.textContent = r.ctaTxt;
+  cta.onclick = () => go('form', null);
+  add(cta);
+  const retry = make('button','btn-retry');
+  retry.textContent = '처음부터 다시 진단하기';
+  retry.onclick = () => startQuiz();
+  add(retry);
+}
+
+/* ── FORM 유효성 검사 ────────────── */
+function validateName(inp){
+  const v = inp.value.trim();
+  const ok = v.length >= 2 && /^[가-힣a-zA-Z\s]+$/.test(v);
+  inp.className = 'fi ' + (ok ? 'ok' : v ? 'err' : '');
+  document.getElementById('FN-err').className = 'err-msg' + (v && !ok ? ' show' : '');
+  document.getElementById('FN-ok').className = 'ok-msg' + (ok ? ' show' : '');
+}
+function validatePhone(inp){
+  const raw = inp.value.replace(/\D/g,'');
+  const ok = /^01[0-9]{8,9}$/.test(raw);
+  inp.className = 'fi ' + (ok ? 'ok' : raw.length ? 'err' : '');
+  document.getElementById('FP-err').className = 'err-msg' + (raw.length && !ok ? ' show' : '');
+  document.getElementById('FP-ok').className = 'ok-msg' + (ok ? ' show' : '');
+}
+function fmtPhone(inp){
+  let v = inp.value.replace(/\D/g,'');
+  if(v.length <= 3) inp.value = v;
+  else if(v.length <= 7) inp.value = v.slice(0,3)+'-'+v.slice(3);
+  else inp.value = v.slice(0,3)+'-'+v.slice(3,7)+'-'+v.slice(7,11);
+}
+function pickChip(el, group){
+  const id = group==='s' ? 'CS' : 'CP';
+  document.querySelectorAll('#'+id+' .chip').forEach(c => c.classList.remove('on'));
+  el.classList.add('on');
+  if(group==='s') st = el.textContent.trim();
+  else pt = el.textContent.trim();
+}
+
+/* ── SUBMIT ────────────────────── */
+function focusFirstInvalid(id){
+  const el = document.getElementById(id);
+  if(!el) return;
+  el.scrollIntoView({behavior:'smooth', block:'center'});
+  setTimeout(() => { try{ el.focus(); }catch(e){} }, 220);
+}
+
+function safeLocalStore(key, value){
+  try{ localStorage.setItem(key, value); }
+  catch(e){ console.warn('localStorage 저장 생략:', e); }
+}
+
+function postWithTimeout(url, payload, timeoutMs){
+  const fetchJob = fetch(url, {
+    method:'POST',
+    mode:'no-cors',
+    headers:{'Content-Type':'application/json'},
+    body: JSON.stringify(payload)
+  });
+  const timeoutJob = new Promise(resolve => setTimeout(resolve, timeoutMs || 3500));
+  return Promise.race([fetchJob, timeoutJob]);
+}
+
+async function doSubmit(event){
+  if(event && event.preventDefault) event.preventDefault();
+
+  const nameEl = document.getElementById('FN');
+  const phoneEl = document.getElementById('FP');
+  const regionEl = document.getElementById('FR');
+  const agreeEl = document.getElementById('AG');
+
+  const name = nameEl.value.trim();
+  const phone = phoneEl.value.trim();
+  const region = regionEl.value;
+  const agreed = agreeEl.checked;
+
+  const rawP = phone.replace(/\D/g,'');
+  const nameOk = !!name && name.length >= 2 && /^[가-힣a-zA-Z\s]+$/.test(name);
+  const phoneOk = /^01[0-9]{8,9}$/.test(rawP);
+
+  if(!nameOk){
+    nameEl.className='fi err';
+    document.getElementById('FN-err').className='err-msg show';
+    document.getElementById('FN-ok').className='ok-msg';
+    focusFirstInvalid('FN');
+    return;
+  }
+  if(!phoneOk){
+    phoneEl.className='fi err';
+    document.getElementById('FP-err').className='err-msg show';
+    document.getElementById('FP-ok').className='ok-msg';
+    focusFirstInvalid('FP');
+    return;
+  }
+  if(!region){
+    alert('희망 지역을 선택해주세요.');
+    focusFirstInvalid('FR');
+    return;
+  }
+  if(!agreed){
+    alert('개인정보 수집 및 이용에 동의해주세요.');
+    focusFirstInvalid('AG');
+    return;
+  }
+
+  const btn = document.getElementById('BS');
+  if(btn.disabled) return;
+  btn.disabled = true;
+  btn.classList.add('loading');
+
+  const payload = {
+    name,
+    phone,
+    region,
+    status: st || '',
+    purpose: pt || '',
+    resultType: rKey || '',
+    answers: answers.join(' | '),
+    ...UTM,
+    created_at: new Date().toISOString()
+  };
+
+  safeLocalStore('evawpet_last_lead', JSON.stringify(payload));
+
+  try{
+    const url = (SCRIPT_URL || '').trim();
+    if(url && url.startsWith('https://script.google.com/')){
+      await postWithTimeout(url, payload, 3500);
     }
+  }catch(e){
+    console.warn('DB 전송 실패. 화면 전환은 계속 진행합니다:', e);
+  }finally{
+    go('complete', null);
+    btn.disabled = false;
+    btn.classList.remove('loading');
+  }
+}
 
-    function handleOptionClick(scoreObj, optionIdx) {
-        for (let key in scoreObj) scores[key] += scoreObj[key];
-        selectedAnswers.push({ score: scoreObj, optionIndex: optionIdx });
+window.doSubmit = doSubmit;
 
-        if (currentQuestionIndex < quizData.length - 1) {
-            currentQuestionIndex++;
-            renderQuestion();
-        } else {
-            calculateResult();
-        }
-    }
-
-    function prevQuiz() {
-        if (currentQuestionIndex > 0) {
-            currentQuestionIndex--;
-            const prevHistory = selectedAnswers.pop();
-            for (let key in prevHistory.score) scores[key] -= prevHistory.score[key];
-            renderQuestion();
-        } else {
-            document.getElementById('view-quiz').classList.remove('active');
-            document.getElementById('view-intro').classList.add('active');
-        }
-    }
-
-    function calculateResult() {
-        let maxKey = 'A';
-        let maxScore = -1;
-        for (let key in scores) {
-            if (scores[key] > maxScore) {
-                maxScore = scores[key];
-                maxKey = key;
-            }
-        }
-        finalResultType = maxKey;
-        displayResult(finalResultType);
-    }
-
-    function displayResult(type) {
-        const data = resultTypes[type];
-        document.getElementById('res-title').innerText = data.title;
-        document.getElementById('res-desc').innerText = data.desc;
-        document.getElementById('res-warning').innerText = data.warning;
-        document.getElementById('res-course-badge').innerText = `추천 과정: ${data.course}`;
-        document.getElementById('res-direction').innerText = `진단자님의 성향 지표를 분석한 결과 [${data.course}] 라인을 선택하는 것이 시행착오를 최소화하는 방안입니다.`;
-        
-        const strengthWrapper = document.getElementById('res-strength');
-        strengthWrapper.innerHTML = '';
-        data.strengths.forEach(str => {
-            const li = document.createElement('li');
-            li.innerText = str;
-            strengthWrapper.appendChild(li);
-        });
-
-        document.getElementById('submit-btn').innerText = data.cta;
-        document.getElementById('view-quiz').classList.remove('active');
-        document.getElementById('view-result').classList.add('active');
-        window.scrollTo({ top: 0, behavior: 'smooth' });
-    }
-
-    function autoHyphen(target) {
-        let val = target.value.replace(/[^0-9]/g, '');
-        if (val.length < 4) target.value = val;
-        else if (val.length < 7) target.value = val.substr(0, 3) + '-' + val.substr(3);
-        else if (val.length < 11) target.value = val.substr(0, 3) + '-' + val.substr(3, 3) + '-' + val.substr(6);
-        else target.value = val.substr(0, 3) + '-' + val.substr(3, 4) + '-' + val.substr(7);
-    }
-
-    function handleFormSubmit(e) {
-        e.preventDefault();
-
-        if (NAVER_FORM_URL) {
-            window.location.href = NAVER_FORM_URL;
-            return;
-        }
-
-        const name = document.getElementById('user_name').value.trim();
-        const phone = document.getElementById('user_phone').value.trim();
-        const region = document.getElementById('user_region').value;
-        const time = document.getElementById('user_time').value;
-
-        const payload = { name, phone, region, preferred_time: time, diagnostic_result: finalResultType, ...utmParams };
-        console.log("제출 데이터 로그:", payload);
-
-        // API 연동 주소가 실제로 있는 경우에만 발송하도록 예외 안전 장치 구축
-        if (SCRIPT_URL && SCRIPT_URL !== "YOUR_GOOGLE_APPS_SCRIPT_URL_HERE") {
-            document.getElementById('submit-btn').innerText = "조회 요청 중...";
-            document.getElementById('submit-btn').disabled = true;
-
-            // 의도적인 타임아웃 방지 및 안전 예외 블록 처리
-            try {
-                fetch(SCRIPT_URL, {
-                    method: "POST",
-                    mode: "no-cors",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify(payload)
-                }).then(() => moveToComplete())
-                  .catch(() => moveToComplete()); 
-            } catch(err) {
-                moveToComplete();
-            }
-        } else {
-            // 주소가 비어있어도 무조건 완료 창으로 넘어가 도달률 유지
-            moveToComplete();
-        }
-    }
-
-    function moveToComplete() {
-        document.getElementById('view-result').classList.remove('active');
-        document.getElementById('view-complete').classList.add('active');
-        window.scrollTo({ top: 0, behavior: 'smooth' });
-    }
-
-    function restartApp() {
-        currentQuestionIndex = 0;
-        scores = { A: 0, B: 0, C: 0, D: 0 };
-        selectedAnswers = [];
-        document.getElementById('diagnosis-form').reset();
-        document.getElementById('submit-btn').disabled = false;
-        document.getElementById('view-complete').classList.remove('active');
-        document.getElementById('view-intro').classList.add('active');
-        window.scrollTo({ top: 0, behavior: 'smooth' });
-    }
+function restart(){
+  curQ=0; answers=[]; scores={A:0,B:0,C:0,D:0}; st=''; pt='';
+  go('intro', null);
+}
 </script>
 </body>
 </html>
